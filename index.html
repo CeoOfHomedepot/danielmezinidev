@@ -1,24 +1,95 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Daniel Mezini | Developer</title>
-  <link rel="stylesheet" href="css/style.css">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Daniel Mezini | CS Portfolio</title>
+    <link rel="stylesheet" href="css/style.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;700&family=Fira+Code&display=swap" rel="stylesheet">
 </head>
 <body>
-  <header>
-    <h1>Daniel Mezini</h1>
-    <p>Self-taught developer building awesome things.</p>
-  </header>
-  <main>
-    <section>
-      <h2>Projects</h2>
-      <p>Coming soon...</p>
-    </section>
-  </main>
-  <footer>
-    <p>© 2025 Daniel Mezini</p>
-  </footer>
+
+    <nav>
+        <div class="nav-container">
+            <span class="logo">DM</span>
+            <div class="tabs">
+                <button class="tab-btn active" onclick="openTab(event, 'home')">Intro</button>
+                <button class="tab-btn" onclick="openTab(event, 'projects')">Projects</button>
+                <button class="tab-btn" onclick="openTab(event, 'resume')">Resume</button>
+                <button class="tab-btn" onclick="openTab(event, 'cover-letter')">Cover Letter</button>
+            </div>
+        </div>
+    </nav>
+
+    <main id="content">
+        <section id="home" class="tab-content active">
+            <h1>Hi, I'm Daniel Mezini</h1>
+            <p class="subtitle">Freshman @ Montclair State University</p>
+            <div class="journey-text">
+                <h3>My Journey</h3>
+                <p>My journey into Computer Science didn't start in a classroom; it started in high school with a curiosity for how <strong>Roblox</strong> worked. I began by teaching myself <strong>Lua</strong> to script custom game mechanics, which opened the door to a world where imagination has no limitations.</p>
+                <p>Today, as a student at MSU and a member of the Game Dev and Software Engineering clubs, I've expanded into Python, C++, and C#. For me, programming is a form of expression—a way to build solutions and experiences that words alone can't describe.</p>
+            </div>
+        </section>
+
+        <section id="projects" class="tab-content">
+            <h2>Technical Work</h2>
+            <div class="project-grid">
+                <div class="lang-category">
+                    <h3>🌙 Lua (Game Development)</h3>
+                    <ul>
+                        <li>Roblox Engine Scripting</li>
+                        <li>[Insert Project Name/Link]</li>
+                    </ul>
+                </div>
+                <div class="lang-category">
+                    <h3>🐍 Python (AI & Automation)</h3>
+                    <ul>
+                        <li>[Insert Project Name/Link]</li>
+                    </ul>
+                </div>
+                <div class="lang-category">
+                    <h3>⚙️ C++ (Systems & Performance)</h3>
+                    <ul>
+                        <li>[Insert Project Name/Link]</li>
+                    </ul>
+                </div>
+            </div>
+        </section>
+
+        <section id="resume" class="tab-content">
+            <h2>Resume</h2>
+            <p>View my full professional experience below.</p>
+            <iframe src="assets/resume.pdf" width="100%" height="600px"></iframe>
+            <br>
+            <a href="assets/resume.pdf" download class="download-btn">Download PDF</a>
+        </section>
+
+        <section id="cover-letter" class="tab-content">
+            <h2>Cover Letter</h2>
+            <div class="letter-box">
+                <p>To whom it may concern,</p>
+                <p>I am writing to express my interest in a CS internship... [Paste your letter here]</p>
+            </div>
+        </section>
+    </main>
+
+    <script>
+        function openTab(evt, tabName) {
+            var i, tabcontent, tablinks;
+            tabcontent = document.getElementsByClassName("tab-content");
+            for (i = 0; i < tabcontent.length; i++) {
+                tabcontent[i].style.display = "none";
+                tabcontent[i].classList.remove("active");
+            }
+            tablinks = document.getElementsByClassName("tab-btn");
+            for (i = 0; i < tablinks.length; i++) {
+                tablinks[i].className = tablinks[i].className.replace(" active", "");
+            }
+            document.getElementById(tabName).style.display = "block";
+            document.getElementById(tabName).classList.add("active");
+            evt.currentTarget.className += " active";
+        }
+    </script>
 </body>
 </html>
