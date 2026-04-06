@@ -6,6 +6,40 @@
     <title>Daniel Mezini | CS Portfolio</title>
     <link rel="stylesheet" href="css/style.css">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;700&family=Fira+Code&display=swap" rel="stylesheet">
+    <style>
+        .sub-tabs { 
+            display: flex; 
+            gap: 15px; 
+            margin-bottom: 25px; 
+        }
+        .sub-tab-btn { 
+            padding: 12px 24px; 
+            cursor: pointer; 
+            border: none; 
+            background: #2a3441; 
+            color: #fff; 
+            border-radius: 6px; 
+            font-family: 'Inter', sans-serif;
+            font-weight: bold;
+            transition: background 0.3s ease;
+        }
+        .sub-tab-btn:hover {
+            background: #3a4759;
+        }
+        .sub-tab-btn.active { 
+            background: #e74c3c; 
+        }
+        .sub-tab-content { 
+            display: none; 
+            background: #1c232d; 
+            padding: 25px; 
+            border-left: 4px solid #e74c3c; 
+            border-radius: 8px; 
+        }
+        .sub-tab-content.active { 
+            display: block; 
+        }
+    </style>
 </head>
 <body>
 
@@ -13,8 +47,8 @@
         <div class="nav-container">
             <span class="logo">DM</span>
             <div class="tabs">
-                <button class="tab-btn active" onclick="openTab(event, 'home')">Intro</button>
-                <button class="tab-btn" onclick="openTab(event, 'projects')">Projects</button>
+                <button class="tab-btn" onclick="openTab(event, 'home')">Intro</button>
+                <button class="tab-btn active" onclick="openTab(event, 'projects')">Projects</button>
                 <button class="tab-btn" onclick="openTab(event, 'resume')">Resume</button>
                 <button class="tab-btn" onclick="openTab(event, 'cover-letter')">Cover Letter</button>
             </div>
@@ -22,7 +56,7 @@
     </nav>
 
     <main id="content">
-        <section id="home" class="tab-content active">
+        <section id="home" class="tab-content">
             <h1>Hi, I'm Daniel Mezini</h1>
             <p class="subtitle">Sophomore @ Montclair State University</p>
             <div class="journey-text">
@@ -32,41 +66,42 @@
             </div>
         </section>
 
-        <section id="projects" class="tab-content">
+        <section id="projects" class="tab-content active">
             <h2>Technical Work</h2>
-            <div class="project-grid">
-                
-                <div class="lang-category">
-                    <h3>🌙 Lua & Luau (Engine Optimization)</h3>
-                    <div class="project-card" style="margin-top: 15px; padding-bottom: 10px;">
-                        <h4>Custom Entity & Humanoid Framework</h4>
-                        <p><strong>Tech:</strong> Luau, Roblox Studio, Client-Server Networking</p>
-                        <p>Engineered a custom NPC architecture from the ground up for an MMORPG environment, completely bypassing the memory-heavy native engine systems.</p>
-                        
-                        <ul style="margin-top: 10px; padding-left: 20px;">
-                            <li><strong>Performance:</strong> Successfully handles <strong>10,000+ active AI entities</strong> simultaneously without server degradation or frame drops.</li>
-                            <li><strong>Architecture:</strong> Replaced native physics calculations with custom CFrame math and spatial partitioning to heavily reduce server memory leaks.</li>
-                        </ul>
-                        
-                        <div class="project-links" style="margin-top: 15px;">
-                            <a href="#" class="btn" style="text-decoration: underline;">Watch Stress Test (GIF)</a>
-                            <a href="#" class="btn" style="text-decoration: underline; margin-left: 10px;">View Core Logic (GitHub)</a>
-                        </div>
+            
+            <div class="sub-tabs">
+                <button class="sub-tab-btn active" onclick="openSubTab(event, 'lua-tab')">🌙 Lua & Luau</button>
+                <button class="sub-tab-btn" onclick="openSubTab(event, 'python-tab')">🐍 Python</button>
+                <button class="sub-tab-btn" onclick="openSubTab(event, 'cpp-tab')">⚙️ C++</button>
+            </div>
+
+            <div id="lua-tab" class="sub-tab-content active">
+                <h3>Lua & Luau (Engine Optimization)</h3>
+                <div class="project-card" style="margin-top: 15px; padding-bottom: 10px;">
+                    <h4>Custom Entity & Humanoid Framework</h4>
+                    <p><strong>Tech:</strong> Luau, Roblox Studio, Client-Server Networking</p>
+                    <p>Engineered a custom NPC architecture from the ground up for an MMORPG environment, completely bypassing the memory-heavy native engine systems.</p>
+                    
+                    <ul style="margin-top: 10px; padding-left: 20px;">
+                        <li><strong>Performance:</strong> Successfully handles <strong>10,000+ active AI entities</strong> simultaneously without server degradation or frame drops.</li>
+                        <li><strong>Architecture:</strong> Replaced native physics calculations with custom CFrame math and spatial partitioning to heavily reduce server memory leaks.</li>
+                    </ul>
+                    
+                    <div class="project-links" style="margin-top: 15px;">
+                        <a href="#" class="btn" style="text-decoration: underline;">Watch Stress Test (GIF)</a>
+                        <a href="#" class="btn" style="text-decoration: underline; margin-left: 10px;">View Core Logic (GitHub)</a>
                     </div>
                 </div>
+            </div>
 
-                <div class="lang-category">
-                    <h3>🐍 Python (AI & Automation)</h3>
-                    <ul>
-                        <li>[Insert Project Name/Link]</li>
-                    </ul>
-                </div>
-                <div class="lang-category">
-                    <h3>⚙️ C++ (Systems & Performance)</h3>
-                    <ul>
-                        <li>[Insert Project Name/Link]</li>
-                    </ul>
-                </div>
+            <div id="python-tab" class="sub-tab-content">
+                <h3>Python (AI & Automation)</h3>
+                <p>Coming soon.</p>
+            </div>
+
+            <div id="cpp-tab" class="sub-tab-content">
+                <h3>C++ (Systems & Performance)</h3>
+                <p>Coming soon.</p>
             </div>
         </section>
 
@@ -101,7 +136,23 @@
             }
             document.getElementById(tabName).style.display = "block";
             document.getElementById(tabName).classList.add("active");
-            evt.currentTarget.className += " active";
+            if(evt) evt.currentTarget.className += " active";
+        }
+
+        function openSubTab(evt, tabName) {
+            var i, tabcontent, tablinks;
+            tabcontent = document.getElementsByClassName("sub-tab-content");
+            for (i = 0; i < tabcontent.length; i++) {
+                tabcontent[i].style.display = "none";
+                tabcontent[i].classList.remove("active");
+            }
+            tablinks = document.getElementsByClassName("sub-tab-btn");
+            for (i = 0; i < tablinks.length; i++) {
+                tablinks[i].className = tablinks[i].className.replace(" active", "");
+            }
+            document.getElementById(tabName).style.display = "block";
+            document.getElementById(tabName).classList.add("active");
+            if(evt) evt.currentTarget.className += " active";
         }
     </script>
 </body>
