@@ -3,156 +3,391 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Daniel Mezini | CS Portfolio</title>
-    <link rel="stylesheet" href="css/style.css">
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;700&family=Fira+Code&display=swap" rel="stylesheet">
+    <title>Daniel Mezini | DevOS</title>
+    <link href="https://fonts.googleapis.com/css2?family=Fira+Code:wght@300;400;600;700&display=swap" rel="stylesheet">
     <style>
-        .sub-tabs { 
-            display: flex; 
-            gap: 15px; 
-            margin-bottom: 25px; 
+        :root {
+            --bg-base: #050608;
+            --bg-panel: #0d1117;
+            --neon-cyan: #00f0ff;
+            --neon-pink: #ff003c;
+            --terminal-green: #00ff66;
+            --text-main: #c9d1d9;
+            --text-muted: #8b949e;
+            --grid-color: rgba(0, 240, 255, 0.05);
         }
-        .sub-tab-btn { 
-            padding: 12px 24px; 
-            cursor: pointer; 
-            border: none; 
-            background: #2a3441; 
-            color: #fff; 
-            border-radius: 6px; 
-            font-family: 'Inter', sans-serif;
-            font-weight: bold;
-            transition: background 0.3s ease;
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Fira Code', monospace;
         }
-        .sub-tab-btn:hover {
-            background: #3a4759;
+
+        body {
+            background-color: var(--bg-base);
+            color: var(--text-main);
+            height: 100vh;
+            overflow: hidden;
+            display: flex;
+            position: relative;
         }
-        .sub-tab-btn.active { 
-            background: #e74c3c; 
+
+        /* --- CRT & Grid Background Effects --- */
+        body::before {
+            content: " ";
+            display: block;
+            position: absolute;
+            top: 0; left: 0; bottom: 0; right: 0;
+            background: linear-gradient(rgba(18, 16, 16, 0) 50%, rgba(0, 0, 0, 0.25) 50%), linear-gradient(90deg, rgba(255, 0, 0, 0.06), rgba(0, 255, 0, 0.02), rgba(0, 0, 255, 0.06));
+            z-index: 100;
+            background-size: 100% 2px, 3px 100%;
+            pointer-events: none;
         }
-        .sub-tab-content { 
-            display: none; 
-            background: #1c232d; 
-            padding: 25px; 
-            border-left: 4px solid #e74c3c; 
-            border-radius: 8px; 
+
+        .grid-bg {
+            position: absolute;
+            width: 100%; height: 100%;
+            background-image: 
+                linear-gradient(var(--grid-color) 1px, transparent 1px),
+                linear-gradient(90deg, var(--grid-color) 1px, transparent 1px);
+            background-size: 30px 30px;
+            z-index: -1;
         }
-        .sub-tab-content.active { 
-            display: block; 
+
+        /* --- OS Layout --- */
+        nav {
+            width: 250px;
+            background: var(--bg-panel);
+            border-right: 1px solid var(--neon-cyan);
+            padding: 20px 0;
+            display: flex;
+            flex-direction: column;
+            z-index: 10;
+            box-shadow: 2px 0 15px rgba(0, 240, 255, 0.1);
         }
+
+        .logo-container {
+            padding: 0 20px 20px;
+            border-bottom: 1px solid #1f2937;
+            margin-bottom: 20px;
+        }
+
+        .logo {
+            color: var(--neon-cyan);
+            font-size: 1.5rem;
+            font-weight: 700;
+            text-shadow: 0 0 10px rgba(0, 240, 255, 0.5);
+            display: block;
+        }
+
+        .nav-label {
+            font-size: 0.75rem;
+            color: var(--text-muted);
+            padding: 0 20px;
+            margin-bottom: 10px;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+        }
+
+        .tab-btn {
+            background: none;
+            border: none;
+            border-left: 3px solid transparent;
+            color: var(--text-main);
+            padding: 12px 20px;
+            text-align: left;
+            cursor: pointer;
+            font-size: 0.9rem;
+            transition: all 0.2s ease;
+            width: 100%;
+        }
+
+        .tab-btn:hover {
+            background: rgba(0, 240, 255, 0.05);
+            color: var(--neon-cyan);
+        }
+
+        .tab-btn.active {
+            border-left-color: var(--neon-cyan);
+            background: rgba(0, 240, 255, 0.1);
+            color: var(--neon-cyan);
+            text-shadow: 0 0 8px rgba(0, 240, 255, 0.4);
+        }
+
+        main {
+            flex: 1;
+            padding: 40px;
+            overflow-y: auto;
+            position: relative;
+            z-index: 10;
+        }
+
+        /* --- Typography & Elements --- */
+        h1 { font-size: 3rem; color: #fff; margin-bottom: 10px; }
+        h2 { font-size: 1.8rem; color: var(--neon-cyan); border-bottom: 1px solid #1f2937; padding-bottom: 10px; margin-bottom: 20px; }
+        h3 { font-size: 1.2rem; margin-bottom: 15px; color: #fff; }
+        p { line-height: 1.6; margin-bottom: 15px; }
+        
+        .terminal-text {
+            color: var(--terminal-green);
+            font-size: 1.1rem;
+            margin-bottom: 30px;
+            text-shadow: 0 0 5px rgba(0, 255, 102, 0.3);
+            min-height: 25px;
+        }
+
+        .highlight-pink { color: var(--neon-pink); text-shadow: 0 0 8px rgba(255, 0, 60, 0.4); }
+
+        /* --- Content Windows --- */
+        .tab-content { display: none; animation: fadeIn 0.3s ease; }
+        .tab-content.active { display: block; }
+
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+
+        /* --- Project Cards (Glitch/Neon Theme) --- */
+        .project-grid { display: grid; gap: 20px; grid-template-columns: 1fr; }
+        
+        .project-card {
+            background: var(--bg-panel);
+            border: 1px solid #30363d;
+            padding: 25px;
+            position: relative;
+            transition: all 0.3s ease;
+        }
+
+        .project-card::before {
+            content: ''; position: absolute; top: 0; left: 0; width: 4px; height: 100%;
+            background: var(--neon-cyan); transition: width 0.3s ease; z-index: 0; opacity: 0;
+        }
+
+        .project-card:hover {
+            border-color: var(--neon-cyan);
+            transform: translateX(10px);
+            box-shadow: -5px 5px 20px rgba(0, 240, 255, 0.15);
+        }
+
+        .project-card > * { position: relative; z-index: 1; }
+        
+        .tech-stack {
+            font-size: 0.8rem; color: var(--neon-pink); margin-bottom: 15px; font-weight: bold;
+        }
+
+        ul.custom-list { list-style: none; padding-left: 15px; margin-bottom: 20px; }
+        ul.custom-list li { position: relative; margin-bottom: 8px; color: var(--text-muted); font-size: 0.95rem; }
+        ul.custom-list li::before { content: '>'; position: absolute; left: -15px; color: var(--neon-cyan); font-weight: bold; }
+
+        /* --- Cyber Buttons --- */
+        .btn {
+            display: inline-block;
+            padding: 10px 20px;
+            border: 1px solid var(--neon-cyan);
+            color: var(--neon-cyan);
+            text-decoration: none;
+            text-transform: uppercase;
+            font-size: 0.85rem;
+            letter-spacing: 1px;
+            position: relative;
+            overflow: hidden;
+            transition: all 0.3s;
+            background: rgba(0, 240, 255, 0.05);
+            margin-right: 15px;
+        }
+
+        .btn:hover {
+            background: var(--neon-cyan);
+            color: #000;
+            box-shadow: 0 0 15px var(--neon-cyan);
+        }
+
+        .btn.secondary {
+            border-color: var(--text-muted);
+            color: var(--text-muted);
+            background: transparent;
+        }
+        
+        .btn.secondary:hover {
+            border-color: #fff;
+            color: #fff;
+            box-shadow: none;
+        }
+
+        /* --- Sub-Tabs --- */
+        .sub-tabs { display: flex; gap: 10px; margin-bottom: 25px; border-bottom: 1px solid #30363d; padding-bottom: 10px;}
+        .sub-tab-btn { background: none; border: none; color: var(--text-muted); cursor: pointer; padding: 5px 10px; transition: 0.2s; }
+        .sub-tab-btn.active { color: var(--neon-cyan); border-bottom: 2px solid var(--neon-cyan); text-shadow: 0 0 5px rgba(0,240,255,0.5); }
+        .sub-tab-content { display: none; }
+        .sub-tab-content.active { display: block; animation: fadeIn 0.2s; }
+
+        /* --- PDF Viewer --- */
+        .resume-container { border: 1px solid var(--neon-cyan); padding: 5px; background: #000; box-shadow: 0 0 20px rgba(0, 240, 255, 0.1); }
+        iframe { border: none; width: 100%; height: 75vh; }
     </style>
 </head>
 <body>
 
+    <div class="grid-bg"></div>
+
     <nav>
-        <div class="nav-container">
-            <span class="logo">DM</span>
-            <div class="tabs">
-                <button class="tab-btn" onclick="openTab(event, 'home')">Intro</button>
-                <button class="tab-btn active" onclick="openTab(event, 'projects')">Projects</button>
-                <button class="tab-btn" onclick="openTab(event, 'resume')">Resume</button>
-                <button class="tab-btn" onclick="openTab(event, 'cover-letter')">Cover Letter</button>
-            </div>
+        <div class="logo-container">
+            <span class="logo">D_MEZINI<span class="highlight-pink">.exe</span></span>
         </div>
+        <div class="nav-label">Explorer</div>
+        <button class="tab-btn active" onclick="openTab(event, 'home')">~/ README.md</button>
+        <button class="tab-btn" onclick="openTab(event, 'projects')">~/ Projects/</button>
+        <button class="tab-btn" onclick="openTab(event, 'resume')">~/ Resume.pdf</button>
+        <button class="tab-btn" onclick="openTab(event, 'contact')">~/ Network_I_O</button>
     </nav>
 
     <main id="content">
-        <section id="home" class="tab-content">
-            <h1>Hi, I'm Daniel Mezini</h1>
-            <p class="subtitle">Sophomore @ Montclair State University</p>
-            <div class="journey-text">
-                <h3>My Journey</h3>
-                <p>My journey into Computer Science didn't start in a classroom; it started in high school with a curiosity for how <strong>Roblox</strong> worked. I began by teaching myself <strong>Lua</strong> to script custom game mechanics, which opened the door to a world where imagination has no limitations.</p>
-                <p>Today, as a student at MSU and a member of the Game Dev and Software Engineering clubs, I've expanded into Python, C++, and C#. For me, programming is a form of expression—a way to build solutions and experiences that words alone can't describe.</p>
+        <section id="home" class="tab-content active">
+            <h1>Daniel Mezini</h1>
+            <p class="terminal-text" id="typewriter"></p>
+            
+            <div class="project-card" style="max-width: 800px;">
+                <h3>System.Init("My Journey")</h3>
+                <p>My entrance into Computer Science wasn't through traditional coursework—it started by dissecting how <strong>Roblox</strong> engine mechanics worked under the hood. Teaching myself <strong>Lua</strong> to script custom game logic opened a door to a world where imagination has no computational limits.</p>
+                <p>Currently studying CS at Montclair State University and actively developing within the Game Dev and Software Engineering clubs. I build scalable backend architectures, push engine limitations, and write code that turns complex logic into seamless interactive experiences.</p>
+                <br>
+                <p><strong>Core Stack:</strong> <span style="color: var(--text-main);">Lua, Luau, Python, C++, C#</span></p>
             </div>
         </section>
 
-        <section id="projects" class="tab-content active">
-            <h2>Technical Work</h2>
+        <section id="projects" class="tab-content">
+            <h2>Directory: ~/Projects/</h2>
             
             <div class="sub-tabs">
-                <button class="sub-tab-btn active" onclick="openSubTab(event, 'lua-tab')">🌙 Lua & Luau</button>
-                <button class="sub-tab-btn" onclick="openSubTab(event, 'python-tab')">🐍 Python</button>
-                <button class="sub-tab-btn" onclick="openSubTab(event, 'cpp-tab')">⚙️ C++</button>
+                <button class="sub-tab-btn active" onclick="openSubTab(event, 'game-tab')">./Game_Dev (Lua)</button>
+                <button class="sub-tab-btn" onclick="openSubTab(event, 'sys-tab')">./Systems_Bots (Python)</button>
+                <button class="sub-tab-btn" onclick="openSubTab(event, 'perf-tab')">./Core_Perf (C++)</button>
             </div>
 
-            <div id="lua-tab" class="sub-tab-content active">
-                <h3>Lua & Luau (Engine Optimization)</h3>
-                <div class="project-card" style="margin-top: 15px; padding-bottom: 10px;">
-                    <h4>Custom Entity & Humanoid Framework</h4>
-                    <p><strong>Tech:</strong> Luau, Roblox Studio, Client-Server Networking</p>
-                    <p>Engineered a custom NPC architecture from the ground up for an MMORPG environment, completely bypassing the memory-heavy native engine systems.</p>
-                    
-                    <ul style="margin-top: 10px; padding-left: 20px;">
-                        <li><strong>Performance:</strong> Successfully handles <strong>10,000+ active AI entities</strong> simultaneously without server degradation or frame drops.</li>
-                        <li><strong>Architecture:</strong> Replaced native physics calculations with custom CFrame math and spatial partitioning to heavily reduce server memory leaks.</li>
+            <div id="game-tab" class="sub-tab-content active project-grid">
+                
+                <div class="project-card">
+                    <h3>Custom Entity & Humanoid Framework</h3>
+                    <div class="tech-stack">[ Luau | Roblox Studio | Client-Server Architecture ]</div>
+                    <p>Engineered a massive-scale NPC architecture for a custom MMORPG, completely bypassing native, memory-heavy engine physics to achieve server-side authority.</p>
+                    <ul class="custom-list">
+                        <li><strong>Performance:</strong> Calculates logic for <strong>10,000+ active AI entities</strong> simultaneously without server thread exhaustion.</li>
+                        <li><strong>Networking:</strong> Implemented byte-level buffer serialization to compress network packets sent to clients at 10Hz.</li>
+                        <li><strong>Client Rendering:</strong> Utilized Workspace:BulkMoveTo() and off-screen distance culling to maintain 60+ FPS on client visualizations.</li>
                     </ul>
-                    
-                    <div class="project-links" style="margin-top: 15px;">
-                        <a href="#" class="btn" style="text-decoration: underline;">Watch Stress Test (GIF)</a>
-                        <a href="https://github.com/CeoOfHomedepot/Luau-Entity-Framework" target="_blank" class="btn" style="text-decoration: underline; margin-left: 10px;">View Core Logic (GitHub)</a>
+                    <div>
+                        <a href="#" class="btn secondary">View Stress Test</a>
+                        <a href="https://github.com/CeoOfHomedepot/Luau-Entity-Framework" target="_blank" class="btn">Source Code</a>
                     </div>
+                </div>
+
+                <div class="project-card">
+                    <h3>Open World RPG Engine Lead</h3>
+                    <div class="tech-stack">[ Lua | Agile Management | Modular Systems ]</div>
+                    <p>Led a two-person team in the development of a sprawling open-world RPG, building out the foundational modular systems required for scalable game design.</p>
+                    <ul class="custom-list">
+                        <li>Engineered modular systems for dynamic events, quest branching, and NPC navigation.</li>
+                        <li>Managed project scope, assigned repository tasks, and conducted code reviews.</li>
+                    </ul>
                 </div>
             </div>
 
-            <div id="python-tab" class="sub-tab-content">
-                <h3>Python (AI & Automation)</h3>
-                <p>Coming soon.</p>
+            <div id="sys-tab" class="sub-tab-content project-grid">
+                <div class="project-card">
+                    <h3>Discord-Integrated Game API</h3>
+                    <div class="tech-stack">[ Python | RESTful API | Discord.py ]</div>
+                    <p>Developed a real-time ranking system bridging a custom backend API with a live Discord bot for community management.</p>
+                    <ul class="custom-list">
+                        <li>Built a secure API processing endpoint to authenticate and automate group management functions.</li>
+                        <li>Allowed authorized community managers to safely update live player game-data directly via Discord chat commands.</li>
+                    </ul>
+                </div>
+                
+                <div class="project-card" style="border-color: #30363d; opacity: 0.7;">
+                    <h3>[IN DEV] Algorithmic Market Tracker</h3>
+                    <div class="tech-stack">[ Python | Data Structures | APIs ]</div>
+                    <p>Currently researching backend data structures for a script to track, filter, and alert on live stock/futures market data.</p>
+                </div>
             </div>
 
-            <div id="cpp-tab" class="sub-tab-content">
-                <h3>C++ (Systems & Performance)</h3>
-                <p>Coming soon.</p>
+            <div id="perf-tab" class="sub-tab-content project-grid">
+                 <div class="project-card" style="border-color: #30363d; opacity: 0.7;">
+                    <h3>[ Awaiting Execution ]</h3>
+                    <p>C++ Systems and Performance architectures compiling...</p>
+                </div>
             </div>
         </section>
 
         <section id="resume" class="tab-content">
-            <h2>Resume</h2>
-            <p>View my full professional experience below.</p>
-            <iframe src="assets/resume.pdf" width="100%" height="600px"></iframe>
-            <br>
-            <a href="assets/resume.pdf" download class="download-btn">Download PDF</a>
+            <h2>Process: resume.pdf</h2>
+            <div style="margin-bottom: 20px;">
+                <a href="assets/resume.pdf" download class="btn">Initiate Download</a>
+            </div>
+            <div class="resume-container">
+                <iframe src="assets/resume.pdf"></iframe>
+            </div>
         </section>
 
-        <section id="cover-letter" class="tab-content">
-            <h2>Cover Letter</h2>
-            <div class="letter-box">
-                <p>To whom it may concern,</p>
-                <p>I am writing to express my interest in a CS internship... [Paste your letter here]</p>
+        <section id="contact" class="tab-content">
+            <h2>Connection Hub</h2>
+            <div class="project-card" style="max-width: 500px;">
+                <p><strong>Status:</strong> Open to Internships & Collaborations</p>
+                <br>
+                <ul class="custom-list">
+                    <li><strong>Email:</strong> danielmezini00@gmail.com</li>
+                    <li><strong>Phone:</strong> 201-364-0442</li>
+                    <li><strong>Location:</strong> Elmwood Park, NJ</li>
+                </ul>
             </div>
         </section>
     </main>
 
     <script>
+        // Typewriter Effect
+        const text = "> Sophomore CS @ Montclair State | High-Performance Systems & Game Dev";
+        let index = 0;
+        function typeWriter() {
+            if (index < text.length) {
+                document.getElementById("typewriter").innerHTML += text.charAt(index);
+                index++;
+                setTimeout(typeWriter, 40);
+            } else {
+                // Add blinking cursor
+                document.getElementById("typewriter").innerHTML += '<span style="animation: blink 1s infinite;">_</span>';
+            }
+        }
+        
+        // CSS for blinking cursor
+        const style = document.createElement('style');
+        style.innerHTML = `@keyframes blink { 0%, 100% { opacity: 1; } 50% { opacity: 0; } }`;
+        document.head.appendChild(style);
+
+        window.onload = () => setTimeout(typeWriter, 500);
+
+        // Tab Navigation Logic
         function openTab(evt, tabName) {
-            var i, tabcontent, tablinks;
-            tabcontent = document.getElementsByClassName("tab-content");
-            for (i = 0; i < tabcontent.length; i++) {
-                tabcontent[i].style.display = "none";
+            let tabcontent = document.getElementsByClassName("tab-content");
+            for (let i = 0; i < tabcontent.length; i++) {
                 tabcontent[i].classList.remove("active");
             }
-            tablinks = document.getElementsByClassName("tab-btn");
-            for (i = 0; i < tablinks.length; i++) {
-                tablinks[i].className = tablinks[i].className.replace(" active", "");
+            let tablinks = document.getElementsByClassName("tab-btn");
+            for (let i = 0; i < tablinks.length; i++) {
+                tablinks[i].classList.remove("active");
             }
-            document.getElementById(tabName).style.display = "block";
             document.getElementById(tabName).classList.add("active");
-            if(evt) evt.currentTarget.className += " active";
+            evt.currentTarget.classList.add("active");
         }
 
+        // Sub-Tab Navigation Logic
         function openSubTab(evt, tabName) {
-            var i, tabcontent, tablinks;
-            tabcontent = document.getElementsByClassName("sub-tab-content");
-            for (i = 0; i < tabcontent.length; i++) {
-                tabcontent[i].style.display = "none";
+            let tabcontent = document.getElementsByClassName("sub-tab-content");
+            for (let i = 0; i < tabcontent.length; i++) {
                 tabcontent[i].classList.remove("active");
             }
-            tablinks = document.getElementsByClassName("sub-tab-btn");
-            for (i = 0; i < tablinks.length; i++) {
-                tablinks[i].className = tablinks[i].className.replace(" active", "");
+            let tablinks = document.getElementsByClassName("sub-tab-btn");
+            for (let i = 0; i < tablinks.length; i++) {
+                tablinks[i].classList.remove("active");
             }
-            document.getElementById(tabName).style.display = "block";
             document.getElementById(tabName).classList.add("active");
-            if(evt) evt.currentTarget.className += " active";
+            evt.currentTarget.classList.add("active");
         }
     </script>
 </body>
