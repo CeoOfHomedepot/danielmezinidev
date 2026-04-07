@@ -45,7 +45,6 @@
             display: block;
             position: absolute;
             top: 0; left: 0; bottom: 0; right: 0;
-            /* Subtler CRT scanlines blending the 60% and 30% colors */
             background: linear-gradient(rgba(11, 15, 25, 0) 50%, rgba(0, 0, 0, 0.25) 50%), 
                         linear-gradient(90deg, rgba(26, 34, 53, 0.05), rgba(0, 255, 204, 0.02), rgba(26, 34, 53, 0.05));
             z-index: 100;
@@ -61,6 +60,57 @@
                 linear-gradient(90deg, var(--grid-color) 1px, transparent 1px);
             background-size: 30px 30px;
             z-index: -1;
+        }
+
+        /* --- Boot Screen --- */
+        #boot-screen {
+            position: fixed;
+            top: 0; left: 0; width: 100vw; height: 100vh;
+            background-color: var(--bg-base);
+            z-index: 9999;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            transition: opacity 0.4s ease, visibility 0.4s;
+        }
+
+        .boot-container {
+            width: 450px;
+            max-width: 90%;
+        }
+
+        .boot-logo {
+            font-size: 2rem;
+            color: var(--text-main);
+            font-weight: 700;
+            margin-bottom: 20px;
+            text-align: left;
+        }
+
+        #boot-text {
+            color: var(--text-muted);
+            font-size: 0.85rem;
+            margin-bottom: 15px;
+            min-height: 100px;
+            font-family: 'Fira Code', monospace;
+            line-height: 1.5;
+        }
+
+        .progress-bar {
+            width: 100%;
+            height: 4px;
+            background: var(--bg-panel);
+            border-radius: 2px;
+            overflow: hidden;
+            position: relative;
+        }
+
+        .progress-fill {
+            height: 100%;
+            width: 0%;
+            background: var(--accent-neon);
+            box-shadow: 0 0 10px var(--accent-neon);
+            transition: width 0.1s linear;
         }
 
         /* --- OS Layout --- */
@@ -234,6 +284,14 @@
 </head>
 <body>
 
+    <div id="boot-screen">
+        <div class="boot-container">
+            <div class="boot-logo">D_MEZINI<span class="highlight-accent">.exe</span></div>
+            <div id="boot-text"></div>
+            <div class="progress-bar"><div class="progress-fill" id="progress"></div></div>
+        </div>
+    </div>
+
     <div class="grid-bg"></div>
 
     <nav>
@@ -349,18 +407,97 @@
     </main>
 
     <script>
-        // Typewriter Effect
-        const text = "> Sophomore CS @ Montclair State | High-Performance Systems & Game Dev";
-        let index = 0;
-        function typeWriter() {
-            if (index < text.length) {
-                document.getElementById("typewriter").innerHTML += text.charAt(index);
-                index++;
-                setTimeout(typeWriter, 40);
-            } else {
-                // Add blinking cursor
-                document.getElementById("typewriter").innerHTML += '<span style="animation: blink 1s infinite;">_</span>';
+        // --- Boot Sequence Logic (Encrypted Hacker Style) ---
+        document.addEventListener("DOMContentLoaded", () => {
+            const bootScreen = document.getElementById('boot-screen');
+            const bootText = document.getElementById('boot-text');
+            const progressBar = document.getElementById('progress');
+            
+            // Check if they already booted this session
+            if (sessionStorage.getItem('devos_booted')) {
+                bootScreen.style.display = 'none';
+                startTypewriter(); // Start the main page typewriter immediately
+                return; 
             }
+
+            const chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789@#$%^&*<>[]{}";
+            const bootSteps = [
+                "Initializing DevOS Kernel v2.4...",
+                "Mounting virtual drives...",
+                "Loading Lua/C++ runtime environments...",
+                "Bypassing engine physics...",
+                "Establishing secure connection...",
+                "ACCESS GRANTED."
+            ];
+
+            let step = 0;
+            let progress = 0;
+
+            // Function to scramble/decode text
+            function scrambleText(element, finalString) {
+                let iterations = 0;
+                const scrambleInterval = setInterval(() => {
+                    element.innerText = "> " + finalString.split("").map((letter, index) => {
+                        if (index < iterations) return finalString[index];
+                        return chars[Math.floor(Math.random() * chars.length)];
+                    }).join("");
+
+                    if (iterations >= finalString.length) clearInterval(scrambleInterval);
+                    iterations += 1/2; // Speed of decoding
+                }, 20);
+            }
+
+            const bootInterval = setInterval(() => {
+                // If it's time for the next step, create a new line and scramble it
+                if (step < bootSteps.length && progress > (step * (100 / bootSteps.length))) {
+                    const line = document.createElement('div');
+                    bootText.appendChild(line);
+                    scrambleText(line, bootSteps[step]);
+                    step++;
+                }
+
+                // Update progress bar
+                progress += 1.5; 
+                progressBar.style.width = `${progress}%`;
+
+                if (progress >= 100) {
+                    clearInterval(bootInterval);
+                    
+                    setTimeout(() => {
+                        const finalLine = document.createElement('div');
+                        finalLine.innerHTML = `> <span style="color: var(--accent-neon);">System Ready.</span>`;
+                        bootText.appendChild(finalLine);
+                        
+                        // Fade out and remove
+                        setTimeout(() => {
+                            bootScreen.style.opacity = '0';
+                            setTimeout(() => {
+                                bootScreen.style.visibility = 'hidden';
+                                sessionStorage.setItem('devos_booted', 'true');
+                                startTypewriter(); // Start the main page typewriter after boot
+                            }, 400);
+                        }, 600);
+                    }, 400); // Wait for the last decryption to finish
+                }
+            }, 30); 
+        });
+
+        // --- Main Page Typewriter Effect ---
+        function startTypewriter() {
+            const text = "> Sophomore CS @ Montclair State | High-Performance Systems & Game Dev";
+            let index = 0;
+            const target = document.getElementById("typewriter");
+            
+            function type() {
+                if (index < text.length) {
+                    target.innerHTML += text.charAt(index);
+                    index++;
+                    setTimeout(type, 30);
+                } else {
+                    target.innerHTML += '<span style="animation: blink 1s infinite;">_</span>';
+                }
+            }
+            setTimeout(type, 300);
         }
         
         // CSS for blinking cursor
@@ -368,9 +505,7 @@
         style.innerHTML = `@keyframes blink { 0%, 100% { opacity: 1; } 50% { opacity: 0; } }`;
         document.head.appendChild(style);
 
-        window.onload = () => setTimeout(typeWriter, 500);
-
-        // Tab Navigation Logic
+        // --- Tab Navigation Logic ---
         function openTab(evt, tabName) {
             let tabcontent = document.getElementsByClassName("tab-content");
             for (let i = 0; i < tabcontent.length; i++) {
@@ -384,7 +519,7 @@
             evt.currentTarget.classList.add("active");
         }
 
-        // Sub-Tab Navigation Logic
+        // --- Sub-Tab Navigation Logic ---
         function openSubTab(evt, tabName) {
             let tabcontent = document.getElementsByClassName("sub-tab-content");
             for (let i = 0; i < tabcontent.length; i++) {
