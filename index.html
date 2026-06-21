@@ -265,6 +265,7 @@
             transition: all 0.3s;
             background: rgba(0, 255, 204, 0.05);
             margin-right: 15px;
+            cursor: pointer;
         }
 
         .btn:hover {
@@ -272,6 +273,16 @@
             color: var(--bg-base);
             box-shadow: 0 0 15px rgba(0, 255, 204, 0.5);
             font-weight: bold;
+        }
+
+        /* Disabled button styling */
+        .btn[disabled] {
+            border-color: var(--border-muted);
+            color: var(--text-muted);
+            background: rgba(42, 54, 85, 0.2);
+            cursor: not-allowed;
+            pointer-events: none;
+            opacity: 0.5;
         }
 
         .btn.secondary {
@@ -321,7 +332,7 @@
             10% { clip: rect(29px, 9999px, 83px, 0); }
             15% { clip: rect(16px, 9999px, 91px, 0); }
             20% { clip: rect(2px, 9999px, 23px, 0); }
-            25% { clip: rect(0, 0, 0, 0); } /* Pauses the glitch */
+            25% { clip: rect(0, 0, 0, 0); }
             100% { clip: rect(0, 0, 0, 0); }
         }
 
@@ -336,7 +347,7 @@
         }
 
         /* --- Cyber Cursor --- */
-        body { cursor: crosshair; } /* Changes default pointer */
+        body { cursor: crosshair; }
         
         .cursor-dot {
             width: 4px; height: 4px;
@@ -346,7 +357,7 @@
             top: 0; left: 0;
             transform: translate(-50%, -50%);
             z-index: 10000;
-            pointer-events: none; /* Lets you click through it */
+            pointer-events: none;
         }
 
         .cursor-outline {
@@ -361,7 +372,6 @@
             transition: width 0.2s, height 0.2s, background-color 0.2s;
         }
 
-        /* When hovering over buttons */
         .cursor-hover {
             width: 50px !important;
             height: 50px !important;
@@ -444,8 +454,8 @@
                         <li><strong>Client Rendering:</strong> Utilized Workspace:BulkMoveTo() and off-screen distance culling to maintain 60+ FPS on client visualizations.</li>
                     </ul>
                     <div>
-                        <a href="#" class="btn secondary">View Stress Test</a>
-                        <a href="https://github.com/CeoOfHomedepot/Luau-Entity-Framework" target="_blank" class="btn">Source Code</a>
+                        <a href="https://www.roblox.com/games/107715665954062/Working" target="_blank" class="btn">View Stress Test</a>
+                        <a href="https://github.com/CeoOfHomedepot/Luau-Entity-Framework" target="_blank" class="btn" disabled>Source Code</a>
                     </div>
                 </div>
 
@@ -518,16 +528,14 @@
     </main>
 
     <script>
-        // --- Boot Sequence Logic (Encrypted Hacker Style) ---
         document.addEventListener("DOMContentLoaded", () => {
             const bootScreen = document.getElementById('boot-screen');
             const bootText = document.getElementById('boot-text');
             const progressBar = document.getElementById('progress');
             
-            // Check if they already booted this session
             if (sessionStorage.getItem('devos_booted')) {
                 bootScreen.style.display = 'none';
-                startTypewriter(); // Start the main page typewriter immediately
+                startTypewriter();
                 return; 
             }
 
@@ -544,7 +552,6 @@
             let step = 0;
             let progress = 0;
 
-            // Function to scramble/decode text
             function scrambleText(element, finalString) {
                 let iterations = 0;
                 const scrambleInterval = setInterval(() => {
@@ -554,12 +561,11 @@
                     }).join("");
 
                     if (iterations >= finalString.length) clearInterval(scrambleInterval);
-                    iterations += 1/2; // Speed of decoding
+                    iterations += 1/2;
                 }, 20);
             }
 
             const bootInterval = setInterval(() => {
-                // If it's time for the next step, create a new line and scramble it
                 if (step < bootSteps.length && progress > (step * (100 / bootSteps.length))) {
                     const line = document.createElement('div');
                     bootText.appendChild(line);
@@ -567,7 +573,6 @@
                     step++;
                 }
 
-                // Update progress bar
                 progress += 1.5; 
                 progressBar.style.width = `${progress}%`;
 
@@ -579,21 +584,19 @@
                         finalLine.innerHTML = `> <span style="color: var(--accent-neon);">System Ready.</span>`;
                         bootText.appendChild(finalLine);
                         
-                        // Fade out and remove
                         setTimeout(() => {
                             bootScreen.style.opacity = '0';
                             setTimeout(() => {
                                 bootScreen.style.visibility = 'hidden';
                                 sessionStorage.setItem('devos_booted', 'true');
-                                startTypewriter(); // Start the main page typewriter after boot
+                                startTypewriter();
                             }, 400);
                         }, 600);
-                    }, 400); // Wait for the last decryption to finish
+                    }, 400);
                 }
             }, 30); 
         });
 
-        // --- Main Page Typewriter Effect ---
         function startTypewriter() {
             const text = "> Sophomore CS @ Montclair State | High-Performance Systems & Game Dev";
             let index = 0;
@@ -611,12 +614,10 @@
             setTimeout(type, 300);
         }
         
-        // CSS for blinking cursor
         const style = document.createElement('style');
         style.innerHTML = `@keyframes blink { 0%, 100% { opacity: 1; } 50% { opacity: 0; } }`;
         document.head.appendChild(style);
 
-        // --- Tab Navigation Logic ---
         function openTab(evt, tabName) {
             let tabcontent = document.getElementsByClassName("tab-content");
             for (let i = 0; i < tabcontent.length; i++) {
@@ -630,7 +631,6 @@
             evt.currentTarget.classList.add("active");
         }
 
-        // --- Sub-Tab Navigation Logic ---
         function openSubTab(evt, tabName) {
             let tabcontent = document.getElementsByClassName("sub-tab-content");
             for (let i = 0; i < tabcontent.length; i++) {
@@ -644,14 +644,12 @@
             evt.currentTarget.classList.add("active");
         }
 
-        // --- Live Telemetry Data ---
         setInterval(() => {
             document.getElementById('cpu-stat').innerText = Math.floor(Math.random() * (18 - 8 + 1)) + 8;
             document.getElementById('mem-stat').innerText = (Math.random() * (2.8 - 2.1) + 2.1).toFixed(1);
             document.getElementById('ping-stat').innerText = Math.floor(Math.random() * (24 - 15 + 1)) + 15;
         }, 2000);
 
-        // --- Cyber Cursor Logic ---
         const dot = document.getElementById("cursor-dot");
         const outline = document.getElementById("cursor-outline");
 
@@ -662,14 +660,12 @@
             dot.style.left = `${posX}px`;
             dot.style.top = `${posY}px`;
 
-            // Adds a slight delay to the outline for a cool trailing effect
             outline.animate({
                 left: `${posX}px`,
                 top: `${posY}px`
             }, { duration: 500, fill: "forwards" });
         });
 
-        // Snap effect on buttons
         document.querySelectorAll('button, a').forEach(el => {
             el.addEventListener('mouseenter', () => outline.classList.add('cursor-hover'));
             el.addEventListener('mouseleave', () => outline.classList.remove('cursor-hover'));
