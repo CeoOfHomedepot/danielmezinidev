@@ -1,676 +1,138 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Daniel Mezini | DevOS</title>
-    <link href="https://fonts.googleapis.com/css2?family=Fira+Code:wght@300;400;600;700&display=swap" rel="stylesheet">
-    <style>
-        :root {
-            /* 60% Primary: Extremely dark slate (almost black) */
-            --bg-base: #05070C; 
-            
-            /* 30% Secondary: Darkened panels to match */
-            --bg-panel: #0E131F;
-            
-            --border-muted: #2A3655;
-            --text-main: #E2E8F0;
-            --text-muted: #94A3B8;
-            
-            /* 10% Accent: The single focal color for interaction */
-            --accent-neon: #00FFCC; 
-            
-            /* Background grid using the accent at very low opacity */
-            --grid-color: rgba(0, 255, 204, 0.03);
-        }
-
-        * {
-            box-sizing: border-box;
-            margin: 0;
-            padding: 0;
-            font-family: 'Fira Code', monospace;
-        }
-
-        body {
-            background-color: var(--bg-base);
-            color: var(--text-main);
-            height: 100vh;
-            overflow: hidden;
-            display: flex;
-            position: relative;
-        }
-
-        /* --- CRT & Grid Background Effects --- */
-        body::before {
-            content: " ";
-            display: block;
-            position: absolute;
-            top: 0; left: 0; bottom: 0; right: 0;
-            background: linear-gradient(rgba(11, 15, 25, 0) 50%, rgba(0, 0, 0, 0.25) 50%), 
-                        linear-gradient(90deg, rgba(26, 34, 53, 0.05), rgba(0, 255, 204, 0.02), rgba(26, 34, 53, 0.05));
-            z-index: 100;
-            background-size: 100% 2px, 3px 100%;
-            pointer-events: none;
-        }
-
-        .grid-bg {
-            position: absolute;
-            width: 100%; height: 100%;
-            background-image: 
-                linear-gradient(var(--grid-color) 1px, transparent 1px),
-                linear-gradient(90deg, var(--grid-color) 1px, transparent 1px);
-            background-size: 30px 30px;
-            z-index: -1;
-        }
-
-        /* --- Boot Screen --- */
-        #boot-screen {
-            position: fixed;
-            top: 0; left: 0; width: 100vw; height: 100vh;
-            background-color: var(--bg-base);
-            z-index: 9999;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            transition: opacity 0.4s ease, visibility 0.4s;
-        }
-
-        .boot-container {
-            width: 450px;
-            max-width: 90%;
-        }
-
-        .boot-logo {
-            font-size: 2rem;
-            color: var(--text-main);
-            font-weight: 700;
-            margin-bottom: 20px;
-            text-align: left;
-        }
-
-        #boot-text {
-            color: var(--text-muted);
-            font-size: 0.85rem;
-            margin-bottom: 15px;
-            min-height: 100px;
-            font-family: 'Fira Code', monospace;
-            line-height: 1.5;
-        }
-
-        .progress-bar {
-            width: 100%;
-            height: 4px;
-            background: var(--bg-panel);
-            border-radius: 2px;
-            overflow: hidden;
-            position: relative;
-        }
-
-        .progress-fill {
-            height: 100%;
-            width: 0%;
-            background: var(--accent-neon);
-            box-shadow: 0 0 10px var(--accent-neon);
-            transition: width 0.1s linear;
-        }
-
-        /* --- OS Layout --- */
-        nav {
-            width: 250px;
-            background: var(--bg-panel);
-            border-right: 1px solid var(--border-muted);
-            padding: 20px 0;
-            display: flex;
-            flex-direction: column;
-            z-index: 10;
-            box-shadow: 2px 0 15px rgba(0, 0, 0, 0.3);
-        }
-
-        .logo-container {
-            padding: 0 20px 20px;
-            border-bottom: 1px solid var(--border-muted);
-            margin-bottom: 20px;
-        }
-
-        .logo {
-            color: var(--text-main);
-            font-size: 1.5rem;
-            font-weight: 700;
-            display: block;
-        }
-
-        .nav-label {
-            font-size: 0.75rem;
-            color: var(--text-muted);
-            padding: 0 20px;
-            margin-bottom: 10px;
-            text-transform: uppercase;
-            letter-spacing: 2px;
-        }
-
-        .tab-btn {
-            background: none;
-            border: none;
-            border-left: 3px solid transparent;
-            color: var(--text-main);
-            padding: 12px 20px;
-            text-align: left;
-            cursor: pointer;
-            font-size: 0.9rem;
-            transition: all 0.2s ease;
-            width: 100%;
-        }
-
-        .tab-btn:hover {
-            background: rgba(0, 255, 204, 0.05);
-            color: var(--accent-neon);
-        }
-
-        .tab-btn.active {
-            border-left-color: var(--accent-neon);
-            background: rgba(0, 255, 204, 0.08);
-            color: var(--accent-neon);
-            text-shadow: 0 0 8px rgba(0, 255, 204, 0.4);
-        }
-
-        main {
-            flex: 1;
-            padding: 40px;
-            overflow-y: auto;
-            position: relative;
-            z-index: 10;
-        }
-
-        /* --- Telemetry Widget --- */
-        .telemetry {
-            position: fixed;
-            bottom: 20px; right: 30px;
-            font-size: 0.7rem;
-            color: var(--accent-neon);
-            text-align: right;
-            border-right: 2px solid var(--accent-neon);
-            padding-right: 10px;
-            opacity: 0.6;
-            z-index: 50;
-            pointer-events: none;
-        }
-        .telemetry div { margin-bottom: 3px; }
-
-        /* --- Typography & Elements --- */
-        h1 { font-size: 3rem; color: #fff; margin-bottom: 10px; }
-        h2 { font-size: 1.8rem; color: var(--accent-neon); border-bottom: 1px solid var(--border-muted); padding-bottom: 10px; margin-bottom: 20px; }
-        h3 { font-size: 1.2rem; margin-bottom: 15px; color: #fff; }
-        p { line-height: 1.6; margin-bottom: 15px; }
-        
-        .terminal-text {
-            color: var(--accent-neon);
-            font-size: 1.1rem;
-            margin-bottom: 30px;
-            text-shadow: 0 0 5px rgba(0, 255, 204, 0.3);
-            min-height: 25px;
-        }
-
-        .highlight-accent { color: var(--accent-neon); text-shadow: 0 0 8px rgba(0, 255, 204, 0.4); }
-
-        /* --- Content Windows --- */
-        .tab-content { display: none; animation: fadeIn 0.3s ease; }
-        .tab-content.active { display: block; }
-
-        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
-
-        /* --- Project Cards (Glitch/Neon Theme) --- */
-        .project-grid { display: grid; gap: 20px; grid-template-columns: 1fr; }
-        
-        .project-card {
-            background: var(--bg-panel);
-            border: 1px solid var(--border-muted);
-            padding: 25px;
-            position: relative;
-            transition: all 0.3s ease;
-        }
-
-        .project-card::before {
-            content: ''; position: absolute; top: 0; left: 0; width: 4px; height: 100%;
-            background: var(--accent-neon); transition: width 0.3s ease; z-index: 0; opacity: 0;
-        }
-
-        .project-card:hover {
-            border-color: var(--accent-neon);
-            transform: translateX(10px);
-            box-shadow: -5px 5px 20px rgba(0, 255, 204, 0.10);
-        }
-
-        .project-card > * { position: relative; z-index: 1; }
-        
-        .tech-stack {
-            font-size: 0.8rem; color: var(--accent-neon); margin-bottom: 15px; font-weight: bold;
-        }
-
-        ul.custom-list { list-style: none; padding-left: 15px; margin-bottom: 20px; }
-        ul.custom-list li { position: relative; margin-bottom: 8px; color: var(--text-muted); font-size: 0.95rem; }
-        ul.custom-list li::before { content: '>'; position: absolute; left: -15px; color: var(--accent-neon); font-weight: bold; }
-
-        /* --- Cyber Buttons --- */
-        .btn {
-            display: inline-block;
-            padding: 10px 20px;
-            border: 1px solid var(--accent-neon);
-            color: var(--accent-neon);
-            text-decoration: none;
-            text-transform: uppercase;
-            font-size: 0.85rem;
-            letter-spacing: 1px;
-            position: relative;
-            overflow: hidden;
-            transition: all 0.3s;
-            background: rgba(0, 255, 204, 0.05);
-            margin-right: 15px;
-            cursor: pointer;
-        }
-
-        .btn:hover {
-            background: var(--accent-neon);
-            color: var(--bg-base);
-            box-shadow: 0 0 15px rgba(0, 255, 204, 0.5);
-            font-weight: bold;
-        }
-
-        /* Disabled button styling */
-        .btn[disabled] {
-            border-color: var(--border-muted);
-            color: var(--text-muted);
-            background: rgba(42, 54, 85, 0.2);
-            cursor: not-allowed;
-            pointer-events: none;
-            opacity: 0.5;
-        }
-
-        .btn.secondary {
-            border-color: var(--text-muted);
-            color: var(--text-muted);
-            background: transparent;
-        }
-        
-        .btn.secondary:hover {
-            border-color: var(--text-main);
-            color: var(--text-main);
-            box-shadow: none;
-        }
-
-        /* --- Glitch Effect --- */
-        .glitch {
-            position: relative;
-            color: #fff;
-            display: inline-block;
-        }
-
-        .glitch::before, .glitch::after {
-            content: attr(data-text);
-            position: absolute;
-            top: 0; left: 0;
-            width: 100%; height: 100%;
-            background: var(--bg-base);
-        }
-
-        .glitch::before {
-            left: 2px;
-            text-shadow: -1px 0 var(--accent-neon);
-            clip: rect(44px, 450px, 56px, 0);
-            animation: glitch-anim 5s infinite linear alternate-reverse;
-        }
-
-        .glitch::after {
-            left: -2px;
-            text-shadow: -1px 0 var(--border-muted);
-            clip: rect(44px, 450px, 56px, 0);
-            animation: glitch-anim2 5s infinite linear alternate-reverse;
-        }
-
-        @keyframes glitch-anim {
-            0% { clip: rect(31px, 9999px, 94px, 0); }
-            5% { clip: rect(70px, 9999px, 71px, 0); }
-            10% { clip: rect(29px, 9999px, 83px, 0); }
-            15% { clip: rect(16px, 9999px, 91px, 0); }
-            20% { clip: rect(2px, 9999px, 23px, 0); }
-            25% { clip: rect(0, 0, 0, 0); }
-            100% { clip: rect(0, 0, 0, 0); }
-        }
-
-        @keyframes glitch-anim2 {
-            0% { clip: rect(65px, 9999px, 100px, 0); }
-            5% { clip: rect(52px, 9999px, 74px, 0); }
-            10% { clip: rect(79px, 9999px, 85px, 0); }
-            15% { clip: rect(75px, 9999px, 5px, 0); }
-            20% { clip: rect(67px, 9999px, 61px, 0); }
-            25% { clip: rect(0, 0, 0, 0); }
-            100% { clip: rect(0, 0, 0, 0); }
-        }
-
-        /* --- Cyber Cursor --- */
-        body { cursor: crosshair; }
-        
-        .cursor-dot {
-            width: 4px; height: 4px;
-            background-color: var(--accent-neon);
-            border-radius: 50%;
-            position: fixed;
-            top: 0; left: 0;
-            transform: translate(-50%, -50%);
-            z-index: 10000;
-            pointer-events: none;
-        }
-
-        .cursor-outline {
-            width: 30px; height: 30px;
-            border: 1px solid var(--accent-neon);
-            border-radius: 50%;
-            position: fixed;
-            top: 0; left: 0;
-            transform: translate(-50%, -50%);
-            z-index: 10000;
-            pointer-events: none;
-            transition: width 0.2s, height 0.2s, background-color 0.2s;
-        }
-
-        .cursor-hover {
-            width: 50px !important;
-            height: 50px !important;
-            background-color: rgba(0, 255, 204, 0.1);
-            border: 1px dashed var(--accent-neon);
-            animation: spin 4s linear infinite;
-        }
-
-        @keyframes spin { 100% { transform: translate(-50%, -50%) rotate(360deg); } }
-
-        /* --- Sub-Tabs --- */
-        .sub-tabs { display: flex; gap: 10px; margin-bottom: 25px; border-bottom: 1px solid var(--border-muted); padding-bottom: 10px;}
-        .sub-tab-btn { background: none; border: none; color: var(--text-muted); cursor: pointer; padding: 5px 10px; transition: 0.2s; font-weight: 600;}
-        .sub-tab-btn.active { color: var(--accent-neon); border-bottom: 2px solid var(--accent-neon); text-shadow: 0 0 5px rgba(0, 255, 204, 0.3); }
-        .sub-tab-content { display: none; }
-        .sub-tab-content.active { display: block; animation: fadeIn 0.2s; }
-
-        /* --- PDF Viewer --- */
-        .resume-container { border: 1px solid var(--border-muted); padding: 5px; background: #000; box-shadow: 0 0 20px rgba(0, 0, 0, 0.5); }
-        iframe { border: none; width: 100%; height: 75vh; }
-    </style>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#0b1210">
+  <meta name="description" content="Daniel Mezini is a computer science student at Montclair State University building game systems, Luau frameworks, and Python backend integrations. Explore his projects and résumé.">
+  <title>Daniel Mezini — Software Developer & Game Systems</title>
+  <link rel="canonical" href="https://danielmezinidev.com/">
+  <meta property="og:type" content="website">
+  <meta property="og:title" content="Daniel Mezini — Software Developer & Game Systems">
+  <meta property="og:description" content="Game architecture, backend logic, and the connections between them. Explore Daniel's projects and résumé.">
+  <meta property="og:url" content="https://danielmezinidev.com/">
+  <meta name="twitter:card" content="summary">
+  <link rel="icon" type="image/svg+xml" href="assets/favicon.svg">
+  <link rel="stylesheet" href="css/style.css">
 </head>
 <body>
-    <div class="cursor-dot" id="cursor-dot"></div>
-    <div class="cursor-outline" id="cursor-outline"></div>
+  <a class="skip-link" href="#main">Skip to content</a>
+  <header class="site-header">
+    <div class="container header-inner">
+      <a class="wordmark" href="#home" aria-label="Daniel Mezini, home">dm<span aria-hidden="true">.</span></a>
+      <nav aria-label="Main navigation">
+        <a href="#projects">Work</a>
+        <a href="#about">About</a>
+        <a href="#resume">Résumé</a>
+        <a href="#contact">Contact <span aria-hidden="true">↗</span></a>
+      </nav>
+    </div>
+  </header>
 
-    <div id="boot-screen">
-        <div class="boot-container">
-            <div class="boot-logo">D_MEZINI<span class="highlight-accent">.exe</span></div>
-            <div id="boot-text"></div>
-            <div class="progress-bar"><div class="progress-fill" id="progress"></div></div>
+  <main id="main" tabindex="-1">
+    <section class="hero container" id="home" aria-labelledby="hero-title">
+      <div class="hero-copy">
+        <p class="eyebrow"><span class="status-dot" aria-hidden="true"></span> Software developer / Game systems</p>
+        <h1 id="hero-title">Daniel<br> Mezini<span class="accent">.</span></h1>
+        <p class="hero-statement">Building the systems<br>behind the experience.</p>
+        <p class="hero-description">I'm a computer science student at Montclair State University, focused on game architecture, backend logic, and the connections between them.</p>
+        <div class="actions">
+          <a class="button button-primary" href="#projects">Explore my work <span aria-hidden="true">↓</span></a>
+          <a class="button button-secondary" href="assets/resume.pdf">View résumé <span class="file-label">PDF</span> <span aria-hidden="true">↗</span></a>
         </div>
+        <p class="availability">Open to internships & collaborations <span aria-hidden="true">·</span> <a href="mailto:danielmezini00@gmail.com">Email me <span aria-hidden="true">↗</span></a></p>
+      </div>
+
+      <aside class="architecture" aria-labelledby="architecture-title">
+        <div class="window-bar"><span class="window-dots" aria-hidden="true"><i></i><i></i><i></i></span><span>entity-framework / overview</span></div>
+        <div class="architecture-body">
+          <p class="eyebrow">From simulation to screen</p>
+          <h2 id="architecture-title">One world.<br>Distinct responsibilities.</h2>
+          <ol class="pipeline">
+            <li><span class="step-number" aria-hidden="true">01</span><div><h3>Server simulation</h3><p>Entity logic & game state</p></div><span class="node-label">LUAU</span></li>
+            <li><span class="step-number" aria-hidden="true">02</span><div><h3>Network updates</h3><p>Byte-buffer serialization</p></div><span class="node-label">10 Hz</span></li>
+            <li><span class="step-number" aria-hidden="true">03</span><div><h3>Client rendering</h3><p>Animation, culling & BulkMoveTo</p></div><span class="node-label">CLIENT</span></li>
+          </ol>
+          <p class="diagram-caption">Architecture overview of my custom entity framework.</p>
+        </div>
+        <a class="architecture-link" href="#entity-framework">Explore the project <span aria-hidden="true">↗</span></a>
+      </aside>
+    </section>
+
+    <div class="container focus-strip" aria-label="Areas of focus">
+      <span class="eyebrow">What I work with</span>
+      <ul><li>Lua & Luau</li><li>Python</li><li>Client–server systems</li><li>Roblox Studio</li></ul>
     </div>
 
-    <div class="grid-bg"></div>
+    <section class="section container" id="projects" aria-labelledby="projects-title">
+      <div class="section-heading">
+        <div><p class="eyebrow">01 / Selected work</p><h2 id="projects-title">Engineering, in practice.</h2></div>
+        <p>Game systems and tools I've built,<br>with a closer look at how they work.</p>
+      </div>
 
-    <nav>
-        <div class="logo-container">
-            <span class="logo">D_MEZINI<span class="highlight-accent">.exe</span></span>
+      <article class="featured-project" id="entity-framework" aria-labelledby="entity-title">
+        <div class="project-intro">
+          <div class="project-meta"><span class="eyebrow">Featured project</span><span class="project-category">Game architecture</span></div>
+          <h3 id="entity-title">Custom Entity &<br>Humanoid Framework</h3>
+          <p class="project-lead">A custom NPC framework for an MMORPG, separating server simulation from client rendering.</p>
+          <ul class="tags" aria-label="Technologies"><li>Luau</li><li>Roblox Studio</li><li>Networking</li></ul>
+          <a class="text-link" href="https://www.roblox.com/games/107715665954062/Working" target="_blank" rel="noopener noreferrer">Open Roblox demo <span aria-hidden="true">↗</span><span class="sr-only"> (opens in a new tab)</span></a>
+          <p class="link-note">Playing the demo requires Roblox.</p>
         </div>
-        <div class="nav-label">Explorer</div>
-        <button class="tab-btn active" onclick="openTab(event, 'home')">~/ README.md</button>
-        <button class="tab-btn" onclick="openTab(event, 'projects')">~/ Projects/</button>
-        <button class="tab-btn" onclick="openTab(event, 'resume')">~/ Resume.pdf</button>
-        <button class="tab-btn" onclick="openTab(event, 'contact')">~/ Network_I_O</button>
-    </nav>
-
-    <main id="content">
-        <section id="home" class="tab-content active">
-            <h1 class="glitch" data-text="Daniel Mezini">Daniel Mezini</h1>
-            <p class="terminal-text" id="typewriter"></p>
-            
-            <div class="project-card" style="max-width: 800px;">
-                <h3>System.Init("My Journey")</h3>
-                <p>My entrance into Computer Science wasn't through traditional coursework—it started by dissecting how <strong>Roblox</strong> engine mechanics worked under the hood. Teaching myself <strong>Lua</strong> to script custom game logic opened a door to a world where imagination has no computational limits.</p>
-                <p>Currently studying CS at Montclair State University and actively developing within the Game Dev and Software Engineering clubs. I build scalable backend architectures, push engine limitations, and write code that turns complex logic into seamless interactive experiences.</p>
-                <br>
-                <p><strong>Core Stack:</strong> <span style="color: var(--text-main);">Lua, Luau, Python, C++, C#</span></p>
+        <div class="project-detail">
+          <div class="detail-block"><span class="detail-number" aria-hidden="true">01</span><div><h4>The challenge</h4><p>Manage NPC simulation and animation while reducing the overhead of the engine's built-in humanoid and physics systems.</p></div></div>
+          <div class="detail-block"><span class="detail-number" aria-hidden="true">02</span><div><h4>What I built</h4><p>A server-authoritative entity architecture with a custom rendering, joint, and animation pipeline. Byte-level buffer serialization carries updates to clients at 10 Hz.</p></div></div>
+          <div class="detail-block"><span class="detail-number" aria-hidden="true">03</span><div><h4>Rendering approach</h4><p>The client uses <code>Workspace:BulkMoveTo()</code> for batched movement, alongside off-screen and distance culling to limit visual work.</p></div></div>
+          <details class="engineering-notes">
+            <summary>Read the engineering notes <span aria-hidden="true">+</span></summary>
+            <div class="notes-body">
+              <h4>Separating simulation from presentation</h4>
+              <p>The server owns entity logic, while the client handles how those entities appear. This separates gameplay decisions from the cost of drawing and animating the world.</p>
+              <h4>Working at the engine boundary</h4>
+              <p>Replacing built-in humanoid behavior means taking on responsibility for joints, animation, and rendering. The custom pipeline gives more control over that work, with additional implementation complexity.</p>
+              <h4>Performance evidence</h4>
+              <p>The linked Roblox experience is the demonstration. Reproducible benchmark results and project source are not published here yet.</p>
             </div>
-        </section>
-
-        <section id="projects" class="tab-content">
-            <h2>Directory: ~/Projects/</h2>
-            
-            <div class="sub-tabs">
-                <button class="sub-tab-btn active" onclick="openSubTab(event, 'game-tab')">./Game_Dev (Lua)</button>
-                <button class="sub-tab-btn" onclick="openSubTab(event, 'sys-tab')">./Systems_Bots (Python)</button>
-                <button class="sub-tab-btn" onclick="openSubTab(event, 'perf-tab')">./Core_Perf (C++)</button>
-            </div>
-
-            <div id="game-tab" class="sub-tab-content active project-grid">
-                
-                <div class="project-card">
-                    <h3>Custom Entity & Humanoid Framework</h3>
-                    <div class="tech-stack">[ Luau | Roblox Studio | Client-Server Architecture ]</div>
-                    <p>Engineered a massive-scale NPC architecture for a custom MMORPG, completely bypassing native, memory-heavy engine physics to achieve server-side authority.</p>
-                    <ul class="custom-list">
-                        <li><strong>Performance:</strong> Calculates logic for <strong>10,000+ active AI entities</strong> simultaneously without server thread exhaustion.</li>
-                        <li><strong>Engineering:</strong> Developed a <strong>custom rendering, joint, and animator pipeline</strong> to optimize overhead and ensure smooth motion.</li>
-                        <li><strong>Networking:</strong> Implemented byte-level buffer serialization to compress network packets sent to clients at 10Hz.</li>
-                        <li><strong>Client Rendering:</strong> Utilized Workspace:BulkMoveTo() and off-screen distance culling to maintain 60+ FPS on client visualizations.</li>
-                    </ul>
-                    <div>
-                        <a href="https://www.roblox.com/games/107715665954062/Working" target="_blank" class="btn">View Stress Test</a>
-                        <a href="https://github.com/CeoOfHomedepot/Luau-Entity-Framework" target="_blank" class="btn" disabled>Source Code</a>
-                    </div>
-                </div>
-
-                <div class="project-card">
-                    <h3>Open World RPG Engine Lead</h3>
-                    <div class="tech-stack">[ Lua | Agile Management | Modular Systems ]</div>
-                    <p>Led a two-person team in the development of a sprawling open-world RPG, building out the foundational modular systems required for scalable game design.</p>
-                    <ul class="custom-list">
-                        <li>Engineered modular systems for dynamic events, quest branching, and NPC navigation.</li>
-                        <li>Managed project scope, assigned repository tasks, and conducted code reviews.</li>
-                    </ul>
-                </div>
-            </div>
-
-            <div id="sys-tab" class="sub-tab-content project-grid">
-                <div class="project-card">
-                    <h3>Discord-Integrated Game API</h3>
-                    <div class="tech-stack">[ Python | RESTful API | Discord.py ]</div>
-                    <p>Developed a real-time ranking system bridging a custom backend API with a live Discord bot for community management.</p>
-                    <ul class="custom-list">
-                        <li>Built a secure API processing endpoint to authenticate and automate group management functions.</li>
-                        <li>Allowed authorized community managers to safely update live player game-data directly via Discord chat commands.</li>
-                    </ul>
-                </div>
-                
-                <div class="project-card" style="border-color: var(--border-muted); opacity: 0.6;">
-                    <h3>[IN DEV] Algorithmic Market Tracker</h3>
-                    <div class="tech-stack">[ Python | Data Structures | APIs ]</div>
-                    <p>Currently researching backend data structures for a script to track, filter, and alert on live stock/futures market data.</p>
-                </div>
-            </div>
-
-            <div id="perf-tab" class="sub-tab-content project-grid">
-                 <div class="project-card" style="border-color: var(--border-muted); opacity: 0.6;">
-                    <h3>[ Awaiting Execution ]</h3>
-                    <p>C++ Systems and Performance architectures compiling...</p>
-                </div>
-            </div>
-        </section>
-
-        <section id="resume" class="tab-content">
-            <h2>Process: resume.pdf</h2>
-            <div style="margin-bottom: 20px;">
-                <a href="assets/resume.pdf" download class="btn">Initiate Download</a>
-            </div>
-            <div class="resume-container">
-                <iframe src="assets/resume.pdf"></iframe>
-            </div>
-        </section>
-
-        <section id="contact" class="tab-content">
-            <h2>Connection Hub</h2>
-            <div class="project-card" style="max-width: 500px;">
-                <p><strong>Status:</strong> Open to Internships & Collaborations</p>
-                <br>
-                <ul class="custom-list">
-                    <li><strong>Email:</strong> danielmezini00@gmail.com</li>
-                    <li><strong>Phone:</strong> 201-364-0442</li>
-                    <li><strong>Location:</strong> Elmwood Park, NJ</li>
-                </ul>
-            </div>
-        </section>
-
-        <div class="telemetry">
-            <div>SYS.METRICS</div>
-            <div>CPU: <span id="cpu-stat">12</span>%</div>
-            <div>MEM: <span id="mem-stat">2.4</span>GB</div>
-            <div>NET: <span id="ping-stat">18</span>ms</div>
+          </details>
         </div>
-    </main>
+      </article>
 
-    <script>
-        document.addEventListener("DOMContentLoaded", () => {
-            const bootScreen = document.getElementById('boot-screen');
-            const bootText = document.getElementById('boot-text');
-            const progressBar = document.getElementById('progress');
-            
-            if (sessionStorage.getItem('devos_booted')) {
-                bootScreen.style.display = 'none';
-                startTypewriter();
-                return; 
-            }
+      <div class="project-list">
+        <article class="project-row" aria-labelledby="bot-title">
+          <div class="project-index" aria-hidden="true">02</div>
+          <div class="project-row-title"><p class="eyebrow">Backend integration / Aug 2024</p><h3 id="bot-title">Discord-integrated<br> game ranking bot</h3><ul class="tags" aria-label="Technologies"><li>Python</li><li>REST API</li><li>Discord.py</li></ul></div>
+          <div class="project-row-body"><p>Connected a custom backend API to a Discord bot so authorized community managers could update player ranks from chat.</p><ul class="project-points"><li>Built API endpoints to authenticate requests and automate group management.</li><li>Connected Discord commands to player data in the game environment.</li></ul><p class="project-availability">Project summary · Public code and demo not linked.</p></div>
+        </article>
+        <article class="project-row" aria-labelledby="rpg-title">
+          <div class="project-index" aria-hidden="true">03</div>
+          <div class="project-row-title"><p class="eyebrow">Team lead & developer / 2022–2023</p><h3 id="rpg-title">Open-world<br> RPG systems</h3><ul class="tags" aria-label="Technologies"><li>Lua</li><li>Modular systems</li><li>Git</li></ul></div>
+          <div class="project-row-body"><p>Led a two-person team building an open-world RPG, with reusable systems for events, quests, and NPC navigation.</p><ul class="project-points"><li>Implemented NPC interactions, quest mechanics, and backend logic.</li><li>Assigned tasks, reviewed code, and used regular check-ins to track progress.</li></ul><p class="project-availability">Project summary · Public code and demo not linked.</p></div>
+        </article>
+      </div>
+    </section>
 
-            const chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789@#$%^&*<>[]{}";
-            const bootSteps = [
-                "Initializing DevOS Kernel v2.4...",
-                "Mounting virtual drives...",
-                "Loading Lua/C++ runtime environments...",
-                "Bypassing engine physics...",
-                "Establishing secure connection...",
-                "ACCESS GRANTED."
-            ];
+    <section class="section about-section" id="about" aria-labelledby="about-title">
+      <div class="container about-grid">
+        <div><p class="eyebrow">02 / About me</p><h2 id="about-title">Curiosity started it.<br>Building keeps it going.</h2></div>
+        <div class="about-copy"><p>I started programming by taking apart how Roblox games worked. Teaching myself Lua led me from custom game logic into the systems that make an interactive world possible.</p><p>At Montclair State University, I'm studying computer science and developing my interests in game development and software engineering. I enjoy work where gameplay, backend architecture, and performance meet.</p><p>I've also helped library patrons use digital tools and introduced beginners to Python. Explaining how something works is part of how I get better at building it.</p></div>
+        <div class="education"><span class="eyebrow">Education</span><h3>Montclair State University</h3><p>B.S. in Computer Science<br>Expected May 2027</p></div>
+        <div class="skills"><span class="eyebrow">Technical toolkit</span><dl><div><dt>Project languages</dt><dd>Lua, Luau, Python</dd></div><div><dt>Additional languages</dt><dd>C++, C#, C, Java, JavaScript, HTML</dd></div><div><dt>Tools & concepts</dt><dd>Roblox Studio, Git, object-oriented programming, backend development, debugging</dd></div></dl></div>
+      </div>
+    </section>
 
-            let step = 0;
-            let progress = 0;
+    <section class="section container resume-section" id="resume" aria-labelledby="resume-title">
+      <div><p class="eyebrow">03 / Résumé</p><h2 id="resume-title">The details, in one place.</h2><p>Education, project experience, technical skills, and community work.</p></div>
+      <div class="resume-actions"><a class="button button-primary" href="assets/resume.pdf">View résumé <span class="file-label">PDF</span> <span aria-hidden="true">↗</span></a><a class="text-link" href="assets/resume.pdf" download="Daniel-Mezini-Resume.pdf">Download a copy <span aria-hidden="true">↓</span></a></div>
+    </section>
 
-            function scrambleText(element, finalString) {
-                let iterations = 0;
-                const scrambleInterval = setInterval(() => {
-                    element.innerText = "> " + finalString.split("").map((letter, index) => {
-                        if (index < iterations) return finalString[index];
-                        return chars[Math.floor(Math.random() * chars.length)];
-                    }).join("");
+    <section class="contact-section" id="contact" aria-labelledby="contact-title">
+      <div class="container contact-grid">
+        <div><p class="eyebrow"><span class="status-dot" aria-hidden="true"></span> Open to internships & collaborations</p><h2 id="contact-title">Let's build<br>something good<span class="accent">.</span></h2><p>Have an opportunity in software or game development?<br>I'd like to hear about it.</p></div>
+        <address class="contact-details"><a class="contact-email" href="mailto:danielmezini00@gmail.com">danielmezini00@gmail.com <span aria-hidden="true">↗</span></a><a href="https://github.com/CeoOfHomedepot" target="_blank" rel="noopener noreferrer">GitHub / CeoOfHomedepot <span aria-hidden="true">↗</span><span class="sr-only"> (opens in a new tab)</span></a><a href="tel:+12013640442">201-364-0442</a><span>Elmwood Park, New Jersey</span></address>
+      </div>
+    </section>
+  </main>
 
-                    if (iterations >= finalString.length) clearInterval(scrambleInterval);
-                    iterations += 1/2;
-                }, 20);
-            }
-
-            const bootInterval = setInterval(() => {
-                if (step < bootSteps.length && progress > (step * (100 / bootSteps.length))) {
-                    const line = document.createElement('div');
-                    bootText.appendChild(line);
-                    scrambleText(line, bootSteps[step]);
-                    step++;
-                }
-
-                progress += 1.5; 
-                progressBar.style.width = `${progress}%`;
-
-                if (progress >= 100) {
-                    clearInterval(bootInterval);
-                    
-                    setTimeout(() => {
-                        const finalLine = document.createElement('div');
-                        finalLine.innerHTML = `> <span style="color: var(--accent-neon);">System Ready.</span>`;
-                        bootText.appendChild(finalLine);
-                        
-                        setTimeout(() => {
-                            bootScreen.style.opacity = '0';
-                            setTimeout(() => {
-                                bootScreen.style.visibility = 'hidden';
-                                sessionStorage.setItem('devos_booted', 'true');
-                                startTypewriter();
-                            }, 400);
-                        }, 600);
-                    }, 400);
-                }
-            }, 30); 
-        });
-
-        function startTypewriter() {
-            const text = "> Sophomore CS @ Montclair State | High-Performance Systems & Game Dev";
-            let index = 0;
-            const target = document.getElementById("typewriter");
-            
-            function type() {
-                if (index < text.length) {
-                    target.innerHTML += text.charAt(index);
-                    index++;
-                    setTimeout(type, 30);
-                } else {
-                    target.innerHTML += '<span style="animation: blink 1s infinite;">_</span>';
-                }
-            }
-            setTimeout(type, 300);
-        }
-        
-        const style = document.createElement('style');
-        style.innerHTML = `@keyframes blink { 0%, 100% { opacity: 1; } 50% { opacity: 0; } }`;
-        document.head.appendChild(style);
-
-        function openTab(evt, tabName) {
-            let tabcontent = document.getElementsByClassName("tab-content");
-            for (let i = 0; i < tabcontent.length; i++) {
-                tabcontent[i].classList.remove("active");
-            }
-            let tablinks = document.getElementsByClassName("tab-btn");
-            for (let i = 0; i < tablinks.length; i++) {
-                tablinks[i].classList.remove("active");
-            }
-            document.getElementById(tabName).classList.add("active");
-            evt.currentTarget.classList.add("active");
-        }
-
-        function openSubTab(evt, tabName) {
-            let tabcontent = document.getElementsByClassName("sub-tab-content");
-            for (let i = 0; i < tabcontent.length; i++) {
-                tabcontent[i].classList.remove("active");
-            }
-            let tablinks = document.getElementsByClassName("sub-tab-btn");
-            for (let i = 0; i < tablinks.length; i++) {
-                tablinks[i].classList.remove("active");
-            }
-            document.getElementById(tabName).classList.add("active");
-            evt.currentTarget.classList.add("active");
-        }
-
-        setInterval(() => {
-            document.getElementById('cpu-stat').innerText = Math.floor(Math.random() * (18 - 8 + 1)) + 8;
-            document.getElementById('mem-stat').innerText = (Math.random() * (2.8 - 2.1) + 2.1).toFixed(1);
-            document.getElementById('ping-stat').innerText = Math.floor(Math.random() * (24 - 15 + 1)) + 15;
-        }, 2000);
-
-        const dot = document.getElementById("cursor-dot");
-        const outline = document.getElementById("cursor-outline");
-
-        window.addEventListener("mousemove", (e) => {
-            const posX = e.clientX;
-            const posY = e.clientY;
-
-            dot.style.left = `${posX}px`;
-            dot.style.top = `${posY}px`;
-
-            outline.animate({
-                left: `${posX}px`,
-                top: `${posY}px`
-            }, { duration: 500, fill: "forwards" });
-        });
-
-        document.querySelectorAll('button, a').forEach(el => {
-            el.addEventListener('mouseenter', () => outline.classList.add('cursor-hover'));
-            el.addEventListener('mouseleave', () => outline.classList.remove('cursor-hover'));
-        });
-    </script>
+  <footer class="container site-footer"><p>© 2026 Daniel Mezini</p><a href="https://github.com/CeoOfHomedepot/danielmezinidev" target="_blank" rel="noopener noreferrer">View website source <span aria-hidden="true">↗</span><span class="sr-only"> (opens in a new tab)</span></a><a href="#home">Back to top <span aria-hidden="true">↑</span></a></footer>
 </body>
 </html>
