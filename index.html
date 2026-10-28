@@ -4,12 +4,12 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <meta name="theme-color" content="#0b1210">
-  <meta name="description" content="Daniel Mezini is a computer science student at Montclair State University building game systems, Luau frameworks, and Python backend integrations. Explore his projects and résumé.">
-  <title>Daniel Mezini — Software Developer & Game Systems</title>
+  <meta name="description" content="Daniel Mezini is a computer science student at Montclair State University specializing in game backend systems, Luau frameworks, and Python integrations. Explore his projects and resume.">
+  <title>Daniel Mezini — Backend Developer & Game Systems</title>
   <link rel="canonical" href="https://danielmezinidev.com/">
   <meta property="og:type" content="website">
-  <meta property="og:title" content="Daniel Mezini — Software Developer & Game Systems">
-  <meta property="og:description" content="Game architecture, backend logic, and the connections between them. Explore Daniel's projects and résumé.">
+  <meta property="og:title" content="Daniel Mezini — Backend Developer & Game Systems">
+  <meta property="og:description" content="Game architecture, backend logic, and the connections between them. Explore Daniel's projects and resume.">
   <meta property="og:url" content="https://danielmezinidev.com/">
   <meta name="twitter:card" content="summary">
   <link rel="icon" type="image/svg+xml" href="assets/favicon.svg">
@@ -23,7 +23,7 @@
       <nav aria-label="Main navigation">
         <a href="#projects">Work</a>
         <a href="#about">About</a>
-        <a href="#resume">Résumé</a>
+        <a href="#resume">Resume</a>
         <a href="#contact">Contact <span aria-hidden="true">↗</span></a>
       </nav>
     </div>
@@ -32,13 +32,13 @@
   <main id="main" tabindex="-1">
     <section class="hero container" id="home" aria-labelledby="hero-title">
       <div class="hero-copy">
-        <p class="eyebrow"><span class="status-dot" aria-hidden="true"></span> Software developer / Game systems</p>
+        <p class="eyebrow"><span class="status-dot" aria-hidden="true"></span> Backend developer / Game systems</p>
         <h1 id="hero-title">Daniel<br> Mezini<span class="accent">.</span></h1>
         <p class="hero-statement">Building the systems<br>behind the experience.</p>
-        <p class="hero-description">I'm a computer science student at Montclair State University, focused on game architecture, backend logic, and the connections between them.</p>
+        <p class="hero-description">I'm a computer science student at Montclair State University, specializing in <a href="#backend">backend development for games</a>—from persistent player systems to server-authoritative combat and world management.</p>
         <div class="actions">
           <a class="button button-primary" href="#projects">Explore my work <span aria-hidden="true">↓</span></a>
-          <a class="button button-secondary" href="assets/resume.pdf">View résumé <span class="file-label">PDF</span> <span aria-hidden="true">↗</span></a>
+          <a class="button button-secondary" href="assets/resume.pdf">View resume <span class="file-label">PDF</span> <span aria-hidden="true">↗</span></a>
         </div>
         <p class="availability">Open to internships & collaborations <span aria-hidden="true">·</span> <a href="mailto:danielmezini00@gmail.com">Email me <span aria-hidden="true">↗</span></a></p>
       </div>
@@ -61,7 +61,7 @@
 
     <div class="container focus-strip" aria-label="Areas of focus">
       <span class="eyebrow">What I work with</span>
-      <ul><li>Lua & Luau</li><li>Python</li><li>Client–server systems</li><li>Roblox Studio</li></ul>
+      <ul><li>Lua & Luau</li><li>Python</li><li>Backend architecture</li><li>Client–server systems</li></ul>
     </div>
 
     <section class="section container" id="projects" aria-labelledby="projects-title">
@@ -111,18 +111,54 @@
       </div>
     </section>
 
+
+    <section class="section backend-section" id="backend" aria-labelledby="backend-title">
+      <div class="container">
+        <div class="section-heading">
+          <div><p class="eyebrow">02 / Backend specialization</p><h2 id="backend-title">The systems behind the game.</h2></div>
+        </div>
+        <p class="backend-intro">I build the backend systems that connect player data, shared worlds, and gameplay rules. My approach centers on server-side validation, persistent data, and a clear separation between game logic and client presentation.</p>
+        <div class="backend-grid">
+          <article class="backend-system">
+            <div class="system-heading"><span class="system-number" aria-hidden="true">01</span><h3>Inventory systems</h3></div>
+            <p>I built inventories around persistent player data, with the server validating item ownership and requested changes. The backend manages inventory state, while the client presents the player's items and available actions.</p>
+          </article>
+          <article class="backend-system">
+            <div class="system-heading"><span class="system-number" aria-hidden="true">02</span><h3>Player trading</h3></div>
+            <p>I handled trading through server-side checks on both players' offers. Validating the items and each player's side of the exchange keeps the transfer tied to the actual inventory state, rather than trusting what the client submits.</p>
+          </article>
+          <article class="backend-system">
+            <div class="system-heading"><span class="system-number" aria-hidden="true">03</span><h3>Guilds & roles</h3></div>
+            <p>I organized guild systems around membership, roles, and permissions. The server checks a player's authority before applying guild actions, with persistent data keeping the group and its members connected across sessions.</p>
+          </article>
+          <article class="backend-system">
+            <div class="system-heading"><span class="system-number" aria-hidden="true">04</span><h3>Combat systems</h3></div>
+            <p>I kept combat calculations, state, and cooldown checks on the server, while handling visuals on the client. That separation let me focus on responsive, smooth presentation while the backend remained responsible for gameplay outcomes.</p>
+          </article>
+          <article class="backend-system">
+            <div class="system-heading"><span class="system-number" aria-hidden="true">05</span><h3>World handling</h3></div>
+            <p>I built world and zone management around server-owned state, coordinating the logic that runs across different parts of the game. Keeping world responsibilities organized helps connect NPCs, events, and player interactions.</p>
+          </article>
+          <article class="backend-system">
+            <div class="system-heading"><span class="system-number" aria-hidden="true">06</span><h3>Quests, events & NPCs</h3></div>
+            <p>I developed modular systems for quest branching, dynamic events, and NPC interactions and navigation. Breaking those responsibilities into reusable components gave the RPG a foundation for connecting gameplay features as the world expanded.</p>
+          </article>
+        </div>
+      </div>
+    </section>
+
     <section class="section about-section" id="about" aria-labelledby="about-title">
       <div class="container about-grid">
-        <div><p class="eyebrow">02 / About me</p><h2 id="about-title">Curiosity started it.<br>Building keeps it going.</h2></div>
-        <div class="about-copy"><p>I started programming by taking apart how Roblox games worked. Teaching myself Lua led me from custom game logic into the systems that make an interactive world possible.</p><p>At Montclair State University, I'm studying computer science and developing my interests in game development and software engineering. I enjoy work where gameplay, backend architecture, and performance meet.</p><p>I've also helped library patrons use digital tools and introduced beginners to Python. Explaining how something works is part of how I get better at building it.</p></div>
+        <div><p class="eyebrow">03 / About me</p><h2 id="about-title">Curiosity started it.<br>Building keeps it going.</h2></div>
+        <div class="about-copy"><p>I started programming by taking apart how Roblox games worked. Teaching myself Lua led me from custom game logic into the systems that make an interactive world possible.</p><p>At Montclair State University, I'm studying computer science and developing my interests in game development and software engineering. My specialty is backend coding: organizing player data, validating gameplay actions, and connecting the systems that make a game work.</p><p>I've also helped library patrons use digital tools and introduced beginners to Python. Explaining how something works is part of how I get better at building it.</p></div>
         <div class="education"><span class="eyebrow">Education</span><h3>Montclair State University</h3><p>B.S. in Computer Science<br>Expected May 2027</p></div>
-        <div class="skills"><span class="eyebrow">Technical toolkit</span><dl><div><dt>Project languages</dt><dd>Lua, Luau, Python</dd></div><div><dt>Additional languages</dt><dd>C++, C#, C, Java, JavaScript, HTML</dd></div><div><dt>Tools & concepts</dt><dd>Roblox Studio, Git, object-oriented programming, backend development, debugging</dd></div></dl></div>
+        <div class="skills"><h3 class="toolkit-heading">Technical toolkit</h3><dl><div><dt>Project languages</dt><dd>Lua, Luau, Python</dd></div><div><dt>Additional languages</dt><dd>C++, C#, C, Java, JavaScript, HTML</dd></div><div><dt>Backend systems</dt><dd>Inventories, trading, guilds, combat, world handling, quests, and events</dd></div><div><dt>Tools & concepts</dt><dd>Roblox Studio, Git, server-side validation, persistent player data, object-oriented programming, debugging</dd></div></dl></div>
       </div>
     </section>
 
     <section class="section container resume-section" id="resume" aria-labelledby="resume-title">
-      <div><p class="eyebrow">03 / Résumé</p><h2 id="resume-title">The details, in one place.</h2><p>Education, project experience, technical skills, and community work.</p></div>
-      <div class="resume-actions"><a class="button button-primary" href="assets/resume.pdf">View résumé <span class="file-label">PDF</span> <span aria-hidden="true">↗</span></a><a class="text-link" href="assets/resume.pdf" download="Daniel-Mezini-Resume.pdf">Download a copy <span aria-hidden="true">↓</span></a></div>
+      <div><p class="eyebrow">04 / Resume</p><h2 id="resume-title">The details, in one place.</h2><p>Education, project experience, technical skills, and community work.</p></div>
+      <div class="resume-actions"><a class="button button-primary" href="assets/resume.pdf">View resume <span class="file-label">PDF</span> <span aria-hidden="true">↗</span></a><a class="text-link" href="assets/resume.pdf" download="Daniel-Mezini-Resume.pdf">Download a copy <span aria-hidden="true">↓</span></a></div>
     </section>
 
     <section class="contact-section" id="contact" aria-labelledby="contact-title">

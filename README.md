@@ -19,14 +19,14 @@ Open [localhost:8000](http://localhost:8000). Opening `index.html` directly also
 ## Structure
 
 ```text
-index.html          Content, project overview, résumé links, and contact details
+index.html          Content, project overview, resume links, and contact details
 css/style.css       Design tokens, layout, responsive and accessibility styles
-assets/resume.pdf   Downloadable résumé
+assets/resume.pdf   Downloadable resume
 assets/favicon.svg  Browser icon
 CNAME               Custom domain for GitHub Pages
 ```
 
-The legacy `asset/resume.pdf` path remains available for existing links. If the résumé is replaced, update both PDF copies together.
+The legacy `asset/resume.pdf` path remains available for existing links. If the resume is replaced, update both PDF copies together.
 
 ## Design and accessibility
 
@@ -36,7 +36,7 @@ The legacy `asset/resume.pdf` path remains available for existing links. If the 
 - Keyboard users get a skip link, visible focus indicators, and a native disclosure for engineering notes.
 - Reduced-motion preferences disable smooth scrolling and transitions.
 - System fonts avoid a third-party font request; print styles provide a text layout.
-- The résumé has direct view and download links instead of depending on an embedded PDF viewer.
+- The resume has direct view and download links instead of depending on an embedded PDF viewer.
 
 ## Updating content
 
@@ -44,7 +44,7 @@ Edit project descriptions in `index.html` and shared styles in `css/style.css`. 
 
 The framework source URL previously linked from the site was unavailable when checked. The interface therefore links to the existing Roblox demonstration and describes source availability in the engineering notes. Add public project repositories or demo recordings when available; do not use disabled or placeholder links.
 
-Education and the dated RPG and Discord projects come from the existing résumé. Recheck the expected graduation date and availability when updating the résumé. Update the footer year when appropriate.
+Education and the dated RPG and Discord projects come from the existing resume. Recheck the expected graduation date and availability when updating the resume. Update the footer year when appropriate.
 
 ## Deployment and checks
 
@@ -55,6 +55,8 @@ Before publishing changes:
 1. Check desktop and narrow layouts, including 320px, 390px, and tablet widths.
 2. Navigate with the keyboard and open the engineering notes with Enter or Space.
 3. Follow the section links and use browser Back to verify navigation.
-4. Open and download the résumé; check the email, telephone, Roblox, and GitHub destinations.
+4. Open and download the resume; check the email, telephone, Roblox, and GitHub destinations.
 5. Check reduced-motion and print layouts. Confirm long text does not overflow.
 6. Verify that new project claims have supporting material and all local asset links resolve.
+
+The backend specialization section reflects Daniel's confirmed experience with inventories, trading, guild roles, server-side combat calculations and client visuals, world/zone handling, and the modular quest/event/NPC systems described in his earlier portfolio.
