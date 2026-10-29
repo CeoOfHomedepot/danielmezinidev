@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <meta name="theme-color" content="#0b1210">
+  <meta name="theme-color" content="#0c1117">
   <meta name="description" content="Daniel Mezini is a computer science student at Montclair State University specializing in game backend systems, Luau frameworks, and Python integrations. Explore his projects and resume.">
   <title>Daniel Mezini — Backend Developer & Game Systems</title>
   <link rel="canonical" href="https://danielmezinidev.com/">
@@ -13,7 +13,7 @@
   <meta property="og:url" content="https://danielmezinidev.com/">
   <meta name="twitter:card" content="summary">
   <link rel="icon" type="image/svg+xml" href="assets/favicon.svg">
-  <link rel="stylesheet" href="css/style.css?v=20261028">
+  <link rel="stylesheet" href="css/style.css?v=20261029">
 </head>
 <body>
   <a class="skip-link" href="#main">Skip to content</a>
@@ -44,16 +44,42 @@
       </div>
 
       <aside class="architecture" aria-labelledby="architecture-title">
-        <div class="window-bar"><span class="window-dots" aria-hidden="true"><i></i><i></i><i></i></span><span>entity-framework / overview</span></div>
+        <div class="window-bar"><span class="window-dots" aria-hidden="true"><i></i><i></i><i></i></span><span>entity-framework</span><span class="window-type">Architecture</span></div>
         <div class="architecture-body">
           <p class="eyebrow">From simulation to screen</p>
-          <h2 id="architecture-title">One world.<br>Distinct responsibilities.</h2>
-          <ol class="pipeline">
-            <li><span class="step-number" aria-hidden="true">01</span><div><h3>Server simulation</h3><p>Entity logic & game state</p></div><span class="node-label">LUAU</span></li>
-            <li><span class="step-number" aria-hidden="true">02</span><div><h3>Network updates</h3><p>Byte-buffer serialization</p></div><span class="node-label">10 Hz</span></li>
-            <li><span class="step-number" aria-hidden="true">03</span><div><h3>Client rendering</h3><p>Animation, culling & BulkMoveTo</p></div><span class="node-label">CLIENT</span></li>
-          </ol>
-          <p class="diagram-caption">Architecture overview of my custom entity framework.</p>
+          <h2 id="architecture-title">One world.<br>Built in layers.</h2>
+          <fieldset class="system-explorer">
+            <legend>Select a layer to look inside</legend>
+            <input class="layer-input sr-only" type="radio" name="layer" id="layer-server" aria-controls="panel-server" checked>
+            <input class="layer-input sr-only" type="radio" name="layer" id="layer-network" aria-controls="panel-network">
+            <input class="layer-input sr-only" type="radio" name="layer" id="layer-client" aria-controls="panel-client">
+            <div class="layer-selectors">
+              <label for="layer-server"><span class="layer-icon" aria-hidden="true">{ }</span><span>Server</span><span class="layer-index" aria-hidden="true">01</span></label>
+              <label for="layer-network"><span class="layer-icon" aria-hidden="true">⇄</span><span>Network</span><span class="layer-index" aria-hidden="true">02</span></label>
+              <label for="layer-client"><span class="layer-icon" aria-hidden="true">&lt; / &gt;</span><span>Client</span><span class="layer-index" aria-hidden="true">03</span></label>
+            </div>
+            <div class="layer-panels">
+              <div class="layer-panel" id="panel-server">
+                <p class="layer-kicker">01 / Source of truth</p>
+                <h3>The server owns the world.</h3>
+                <p>Entity logic and game state live here. Gameplay decisions stay separate from the work of drawing the world.</p>
+                <div class="data-path"><span>Entity logic</span><span aria-hidden="true">→</span><span>Game state</span></div>
+              </div>
+              <div class="layer-panel" id="panel-network">
+                <p class="layer-kicker">02 / Across the boundary</p>
+                <h3>State becomes a message.</h3>
+                <p>Byte-level buffer serialization carries entity updates to clients at 10 Hz, connecting simulation to presentation.</p>
+                <div class="data-path"><span>State</span><span aria-hidden="true">→</span><span>Buffer</span><span aria-hidden="true">→</span><span>Client</span></div>
+              </div>
+              <div class="layer-panel" id="panel-client">
+                <p class="layer-kicker">03 / The visible experience</p>
+                <h3>The client brings it to life.</h3>
+                <p>Custom joints and animation, batched movement, and visibility culling turn server updates into an on-screen world.</p>
+                <div class="data-path"><span>Updates</span><span aria-hidden="true">→</span><span>Rendered world</span></div>
+              </div>
+            </div>
+          </fieldset>
+          <p class="diagram-caption">Inside my custom entity & humanoid framework.</p>
         </div>
         <a class="architecture-link" href="#entity-framework">Explore the project <span aria-hidden="true">↗</span></a>
       </aside>
@@ -151,7 +177,7 @@
       <div class="container about-grid">
         <div><p class="eyebrow">03 / About me</p><h2 id="about-title">Curiosity started it.<br>Building keeps it going.</h2></div>
         <div class="about-copy"><p>I started programming by taking apart how Roblox games worked. Teaching myself Lua led me from custom game logic into the systems that make an interactive world possible.</p><p>At Montclair State University, I'm studying computer science and developing my interests in game development and software engineering. My specialty is backend coding: organizing player data, validating gameplay actions, and connecting the systems that make a game work.</p><p>I've also helped library patrons use digital tools and introduced beginners to Python. Explaining how something works is part of how I get better at building it.</p></div>
-        <div class="education"><span class="eyebrow">Education</span><h3>Montclair State University</h3><p>B.S. in Computer Science<br>Expected May 2027</p></div>
+        <div class="education"><h3 class="toolkit-heading">Education</h3><p class="education-school">Montclair State University</p><p>B.S. in Computer Science<br>Expected May 2027</p><div class="education-note"><span aria-hidden="true">{ curiosity → code }</span><p>Self-taught in Lua.<br>Building on a foundation in computer science.</p></div></div>
         <div class="skills"><h3 class="toolkit-heading">Technical toolkit</h3><dl><div><dt>Project languages</dt><dd>Lua, Luau, Python</dd></div><div><dt>Additional languages</dt><dd>C++, C#, C, Java, JavaScript, HTML</dd></div><div><dt>Backend systems</dt><dd>Inventories, trading, guilds, combat, world handling, quests, and events</dd></div><div><dt>Tools & concepts</dt><dd>Roblox Studio, Git, server-side validation, persistent player data, object-oriented programming, debugging</dd></div></dl></div>
       </div>
     </section>

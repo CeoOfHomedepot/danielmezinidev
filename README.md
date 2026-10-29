@@ -36,6 +36,8 @@ The legacy `asset/resume.pdf` path remains available for existing links. If the 
 - Keyboard users get a skip link, visible focus indicators, and a native disclosure for engineering notes.
 - Reduced-motion preferences disable smooth scrolling and transitions.
 - System fonts avoid a third-party font request; print styles provide a text layout.
+- The architecture explorer uses native radio controls and CSS: select Server, Network, or Client by touch, mouse, or keyboard. All three panels share a grid cell so switching layers does not shift the page.
+- Slate surfaces and mint actions form the base palette; amber identifies networking and violet identifies client presentation. Labels also communicate every state without relying on color.
 - The resume has direct view and download links instead of depending on an embedded PDF viewer.
 
 ## Updating content
@@ -58,5 +60,6 @@ Before publishing changes:
 4. Open and download the resume; check the email, telephone, Roblox, and GitHub destinations.
 5. Check reduced-motion and print layouts. Confirm long text does not overflow.
 6. Verify that new project claims have supporting material and all local asset links resolve.
+7. Update the stylesheet version in `index.html` when changing CSS so returning visitors receive the new design. Check all three architecture layers and keyboard arrow navigation.
 
 The backend specialization section reflects Daniel's confirmed experience with inventories, trading, guild roles, server-side combat calculations and client visuals, world/zone handling, and the modular quest/event/NPC systems described in his earlier portfolio.
